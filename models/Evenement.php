@@ -8,6 +8,7 @@ class Evenement {
     public $description;
     public $date_debut;
     public $date_fin;
+    public $image;
     public $cree_le;
     public $modifie_le;
 
@@ -16,9 +17,8 @@ class Evenement {
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table . " 
-                  (nom, description, date_debut, date_fin) 
-                  VALUES (:nom, :description, :date_debut, :date_fin)";
+        $query = "INSERT INTO " . $this->table . " (nom, description, date_debut, date_fin, image) 
+                  VALUES (:nom, :description, :date_debut, :date_fin, :image)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -26,11 +26,9 @@ class Evenement {
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':date_debut', $this->date_debut);
         $stmt->bindParam(':date_fin', $this->date_fin);
+        $stmt->bindParam(':image', $this->image);
 
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
+        return $stmt->execute();
     }
 
     public function read() {
@@ -40,24 +38,35 @@ class Evenement {
         return $stmt;
     }
 
-    public function update() {
-        $query = "UPDATE " . $this->table . " 
-                  SET nom = :nom, description = :description, date_debut = :date_debut, date_fin = :date_fin
-                  WHERE id = :id";
 
-        $stmt = $this->conn->prepare($query);
 
-        $stmt->bindParam(':id', $this->id);
-        $stmt->bindParam(':nom', $this->nom);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':date_debut', $this->date_debut);
-        $stmt->bindParam(':date_fin', $this->date_fin);
 
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
+public function update() {
+    $query = "UPDATE " . $this->table . " 
+              SET nom = :nom, 
+                  description = :description, 
+                  date_debut = :date_debut, 
+                  date_fin = :date_fin, 
+                  image = :image
+              WHERE id = :id";
+
+    $stmt = $this->conn->prepare($query);
+
+    // Bind values
+    $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
+    $stmt->bindParam(':nom', $this->nom, PDO::PARAM_STR);
+    $stmt->bindParam(':description', $this->description, PDO::PARAM_STR);
+    $stmt->bindParam(':date_debut', $this->date_debut, PDO::PARAM_STR);
+    $stmt->bindParam(':date_fin', $this->date_fin, PDO::PARAM_STR);
+    $stmt->bindParam(':image', $this->image, PDO::PARAM_STR);
+
+    // Execute the query
+    if ($stmt->execute()) {
+        return true;
     }
+    return false;
+}
+
 
     public function delete() {
         $query = "DELETE FROM " . $this->table . " WHERE id = :id";
