@@ -1,70 +1,104 @@
+
 <?php
 class Remise {
     private $conn;
     private $table = 'remises';
 
     public $id;
-    public $id_partenaire;
-    public $id_type_abonnement;
+    public $nom;
+    public $description;
+    public $type_remise;
     public $valeur_remise;
-    public $offre_speciale;
-    public $valable_du;
-    public $valable_au;
+    public $expire_le;
+    public $categorie;
+    public $id_partenaire;
     public $cree_le;
     public $modifie_le;
 
     public function __construct($db) {
         $this->conn = $db;
     }
-
     public function create() {
         $query = "INSERT INTO " . $this->table . " 
-                  (id_partenaire, id_type_abonnement, valeur_remise, offre_speciale, valable_du, valable_au) 
-                  VALUES (:id_partenaire, :id_type_abonnement, :valeur_remise, :offre_speciale, :valable_du, :valable_au)";
-
+                  (nom, description, type_remise, valeur_remise, expire_le, categorie, id_partenaire) 
+                  VALUES 
+                  (:nom, :description, :type_remise, :valeur_remise, :expire_le, :categorie, :id_partenaire)";
+    
         $stmt = $this->conn->prepare($query);
-
-        $stmt->bindParam(':id_partenaire', $this->id_partenaire);
-        $stmt->bindParam(':id_type_abonnement', $this->id_type_abonnement);
-        $stmt->bindParam(':valeur_remise', $this->valeur_remise);
-        $stmt->bindParam(':offre_speciale', $this->offre_speciale);
-        $stmt->bindParam(':valable_du', $this->valable_du);
-        $stmt->bindParam(':valable_au', $this->valable_au);
-
+    
+        // Bind values
+        $stmt->bindParam(':nom', $this->nom, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $this->description, PDO::PARAM_STR);
+        $stmt->bindParam(':type_remise', $this->type_remise, PDO::PARAM_STR);
+        $stmt->bindParam(':valeur_remise', $this->valeur_remise, PDO::PARAM_STR);
+        $stmt->bindParam(':expire_le', $this->expire_le, PDO::PARAM_STR);
+        $stmt->bindParam(':categorie', $this->categorie, PDO::PARAM_STR);
+        $stmt->bindParam(':id_partenaire', $this->id_partenaire, PDO::PARAM_INT);
+    
+        // Execute the query
         if ($stmt->execute()) {
             return true;
         }
         return false;
     }
-
-    public function read() {
-        $query = "SELECT * FROM " . $this->table;
+    public function update() {
+        $query = "UPDATE " . $this->table . " 
+                  SET nom = :nom, 
+                      description = :description, 
+                      type_remise = :type_remise, 
+                      valeur_remise = :valeur_remise, 
+                      expire_le = :expire_le, 
+                      categorie = :categorie, 
+                      id_partenaire = :id_partenaire 
+                  WHERE id = :id";
+    
+        $stmt = $this->conn->prepare($query);
+    
+        // Bind values
+        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $stmt->bindParam(':nom', $this->nom, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $this->description, PDO::PARAM_STR);
+        $stmt->bindParam(':type_remise', $this->type_remise, PDO::PARAM_STR);
+        $stmt->bindParam(':valeur_remise', $this->valeur_remise, PDO::PARAM_STR);
+        $stmt->bindParam(':expire_le', $this->expire_le, PDO::PARAM_STR);
+        $stmt->bindParam(':categorie', $this->categorie, PDO::PARAM_STR);
+        $stmt->bindParam(':id_partenaire', $this->id_partenaire, PDO::PARAM_INT);
+    
+        // Execute the query
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+        
+    public function readAll() {
+        $query = "SELECT r.*, p.nom AS partenaire_nom 
+                  FROM " . $this->table . " r 
+                  JOIN partenaires p ON r.id_partenaire = p.id";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
     }
 
-    public function update() {
-        $query = "UPDATE " . $this->table . " 
-                  SET id_partenaire = :id_partenaire, id_type_abonnement = :id_type_abonnement, valeur_remise = :valeur_remise, offre_speciale = :offre_speciale, valable_du = :valable_du, valable_au = :valable_au
-                  WHERE id = :id";
-
+    public function readLimitedOffers() {
+        $query = "SELECT r.*, p.nom AS partenaire_nom 
+                  FROM " . $this->table . " r 
+                  JOIN partenaires p ON r.id_partenaire = p.id
+                  WHERE r.type_remise = 'limitee' AND (r.expire_le IS NOT NULL AND r.expire_le >= CURDATE())";
         $stmt = $this->conn->prepare($query);
-
-        $stmt->bindParam(':id', $this->id);
-        $stmt->bindParam(':id_partenaire', $this->id_partenaire);
-        $stmt->bindParam(':id_type_abonnement', $this->id_type_abonnement);
-        $stmt->bindParam(':valeur_remise', $this->valeur_remise);
-        $stmt->bindParam(':offre_speciale', $this->offre_speciale);
-        $stmt->bindParam(':valable_du', $this->valable_du);
-        $stmt->bindParam(':valable_au', $this->valable_au);
-
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
+        $stmt->execute();
+        return $stmt;
     }
 
+    public function readPermanentOffers() {
+        $query = "SELECT r.*, p.nom AS partenaire_nom 
+                  FROM " . $this->table . " r 
+                  JOIN partenaires p ON r.id_partenaire = p.id
+                  WHERE r.type_remise = 'permanente'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
     public function delete() {
         $query = "DELETE FROM " . $this->table . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);

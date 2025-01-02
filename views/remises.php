@@ -11,6 +11,13 @@
     <!-- Navbar -->
     <?php include 'navbar.php'; ?>
 
+    <?php
+    require_once __DIR__ . '/../controllers/RemisesController.php';
+    $controller = new RemisesController();
+    $limitedOffers = $controller->getLimitedOffers();
+    $permanentOffers = $controller->getPermanentOffers();
+    ?>
+
     <!-- Discounts and Advantages Section -->
     <main class="discounts-page-section">
         <div class="search-filter-container">
@@ -18,100 +25,45 @@
             <button class="filter-btn"><i class="fa fa-filter"></i> Filtres</button>
         </div>
 
-        <!-- Limited Time Offers -->
-        <section class="limited-offers-section">
-            <h2>Offres Limitées</h2>
-            <div class="limited-offers-container">
-                <!-- Offer 1 -->
-                <div class="limited-offer-card">
-                    <div class="limited-offer-header">
-                        <span class="offer-expiry"><i class="fa fa-clock-o"></i> Expire dans 2 jours</span>
-                    </div>
-                    <div class="limited-offer-body">
-                        <div class="offer-icon">
-                            <i class="fa fa-shopping-bag"></i>
-                        </div>
-                        <h4>Partenaire A</h4>
-                        <p>Commerce local</p>
-                        <p class="offer-discount">-30%</p>
-                        <p>Sur tous les articles en magasin</p>
-                        <button class="offer-btn">Voir l'offre</button>
-                    </div>
+    <!-- Limited Time Offers -->
+<section class="limited-offers-section">
+    <h2>Offres Limitées</h2>
+    <div class="limited-offers-container">
+        <?php foreach ($limitedOffers as $offer): ?>
+            <div class="limited-offer-card">
+                <div class="limited-offer-header">
+                    <span class="offer-expiry"><i class="fa fa-clock-o"></i> Expire dans <?php 
+                        $daysLeft = (strtotime($offer['expire_le']) - strtotime(date('Y-m-d'))) / 86400; 
+                        echo $daysLeft; ?> jours</span>
                 </div>
-                <!-- Offer 2 -->
-                <div class="limited-offer-card">
-                    <div class="limited-offer-header">
-                        <span class="offer-expiry"><i class="fa fa-clock-o"></i> Expire dans 5 jours</span>
-                    </div>
-                    <div class="limited-offer-body">
-                        <div class="offer-icon">
-                            <i class="fa fa-cutlery"></i>
-                        </div>
-                        <h4>Restaurant B</h4>
-                        <p>Restauration</p>
-                        <p class="offer-discount">2 pour 1</p>
-                        <p>Sur les menus du midi</p>
-                        <button class="offer-btn">Voir l'offre</button>
-                    </div>
+                <div class="limited-offer-body">
+                    <h4><?php echo htmlspecialchars($offer['nom']); ?></h4>
+                    <p>Partenaire : <?php echo htmlspecialchars($offer['partenaire_nom']); ?></p>
+                    <p class="offer-discount"><?php echo htmlspecialchars($offer['valeur_remise']); ?></p>
+                    <p><?php echo htmlspecialchars($offer['description']); ?></p>
+                    <button class="offer-btn">Voir l'offre</button>
                 </div>
             </div>
-        </section>
+        <?php endforeach; ?>
+    </div>
+</section>
 
-        <!-- Permanent Discounts -->
-        <section class="permanent-discounts-section">
-            <h2>Remises Permanentes</h2>
-            <div class="permanent-discounts-container">
-                <div class="permanent-discount-card">
-                    <h4>Boutique C</h4>
-                    <p>Mode</p>
-                    <p class="discount-value">-15%</p>
-                    <p>Permanent sur présentation de la carte</p>
-                    <button class="offer-btn">Plus d'infos</button>
-                </div>
-                <div class="permanent-discount-card">
-                    <h4>Salle de Sport D</h4>
-                    <p>Sport</p>
-                    <p class="discount-value">-20%</p>
-                    <p>Sur l'abonnement annuel</p>
-                    <button class="offer-btn">Plus d'infos</button>
-                </div>
-                <div class="permanent-discount-card">
-                    <h4>Librairie E</h4>
-                    <p>Culture</p>
-                    <p class="discount-value">-10%</p>
-                    <p>Sur tous les livres</p>
-                    <button class="offer-btn">Plus d'infos</button>
-                </div>
-                <div class="permanent-discount-card">
-                    <h4>Librairie E</h4>
-                    <p>Culture</p>
-                    <p class="discount-value">-10%</p>
-                    <p>Sur tous les livres</p>
-                    <button class="offer-btn">Plus d'infos</button>
-                </div>
-                <div class="permanent-discount-card">
-                    <h4>Librairie E</h4>
-                    <p>Culture</p>
-                    <p class="discount-value">-10%</p>
-                    <p>Sur tous les livres</p>
-                    <button class="offer-btn">Plus d'infos</button>
-                </div>
-                <div class="permanent-discount-card">
-                    <h4>Librairie E</h4>
-                    <p>Culture</p>
-                    <p class="discount-value">-10%</p>
-                    <p>Sur tous les livres</p>
-                    <button class="offer-btn">Plus d'infos</button>
-                </div>
-                <div class="permanent-discount-card">
-                    <h4>Librairie E</h4>
-                    <p>Culture</p>
-                    <p class="discount-value">-10%</p>
-                    <p>Sur tous les livres</p>
-                    <button class="offer-btn">Plus d'infos</button>
-                </div>
+<!-- Permanent Discounts -->
+<section class="permanent-discounts-section">
+    <h2>Remises Permanentes</h2>
+    <div class="permanent-discounts-container">
+        <?php foreach ($permanentOffers as $offer): ?>
+            <div class="permanent-discount-card">
+                <h4><?php echo htmlspecialchars($offer['nom']); ?></h4>
+                <p>Partenaire : <?php echo htmlspecialchars($offer['partenaire_nom']); ?></p>
+                <p class="discount-value"><?php echo htmlspecialchars($offer['valeur_remise']); ?></p>
+                <p><?php echo htmlspecialchars($offer['description']); ?></p>
+                <button class="offer-btn">Plus d'infos</button>
             </div>
-        </section>
+        <?php endforeach; ?>
+    </div>
+</section>
+
     </main>
 
     <!-- Footer -->
