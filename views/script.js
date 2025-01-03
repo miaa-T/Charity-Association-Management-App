@@ -80,5 +80,37 @@ document.addEventListener("DOMContentLoaded", function () {
         isScrolling = false;
         scrollInterval = setInterval(autoScroll, 20);
     });
+   
+    document.addEventListener("DOMContentLoaded", () => {
+        const searchBtn = document.getElementById("search-btn");
+        const resultsContainer = document.getElementById("results-container");
+    
+        searchBtn.addEventListener("click", () => {
+            const search = document.getElementById("search-input").value;
+            const category = document.getElementById("category-filter").value;
+            const type = document.getElementById("type-filter").value;
+    
+            // Prepare the AJAX request
+            const xhr = new XMLHttpRequest();
+            xhr.open(
+                "GET",
+                `/remises-handler.php?search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}&type=${encodeURIComponent(type)}`,
+                true
+            );
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    resultsContainer.innerHTML = xhr.responseText;
+                } else {
+                    resultsContainer.innerHTML = `<p>An error occurred. Please try again.</p>`;
+                }
+            };
+            xhr.onerror = function () {
+                resultsContainer.innerHTML = `<p>An error occurred while connecting to the server.</p>`;
+            };
+            xhr.send();
+        });
+    });
+    
+
 });
 

@@ -10,19 +10,28 @@ class RemisesController {
         $this->remise = new Remise($db->connect());
     }
 
+    // Fetch all remises
     public function getAllRemises() {
-        $stmt = $this->remise->readAll();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->remise->readAll();
     }
 
+    // Fetch limited-time offers
     public function getLimitedOffers() {
-        $stmt = $this->remise->readLimitedOffers();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->remise->readLimitedOffers();
     }
 
+    // Fetch permanent offers
     public function getPermanentOffers() {
-        $stmt = $this->remise->readPermanentOffers();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->remise->readPermanentOffers();
+    }
+
+    // Fetch categories
+    public function getCategories() {
+        return $this->remise->getCategories();
+    }
+
+    // Fetch filtered remises
+    public function getFilteredRemises($search = '', $category = '', $type = '') {
+        return $this->remise->getFilteredRemises($search, $category, $type);
     }
 }
-?>
