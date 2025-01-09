@@ -2,6 +2,8 @@
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <header class="navbar">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <div class="logo">
         <a href="index.php"><img src="Images/logo_elmountada.png" alt="Logo"></a>
     </div>

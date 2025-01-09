@@ -35,7 +35,7 @@
             </div>
             <button class="edit-info-btn">Modifier mes informations</button>
         </section>
-
+        <?php include 'carteMembre.php'; ?>
         <!-- Renewal Section -->
         <section class="renewal-section">
             <div class="renewal-alert">

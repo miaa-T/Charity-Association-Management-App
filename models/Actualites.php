@@ -17,13 +17,13 @@ class Actualite {
     public function create() {
         $query = "INSERT INTO " . $this->table . " (titre, description, image) 
                   VALUES (:titre, :description, :image)";
-
+    
         $stmt = $this->conn->prepare($query);
-
+    
         $stmt->bindParam(':titre', $this->titre);
         $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':image', $this->image);
-
+        $stmt->bindParam(':image', $this->image); 
+    
         return $stmt->execute();
     }
 

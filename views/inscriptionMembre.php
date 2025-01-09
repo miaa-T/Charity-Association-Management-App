@@ -95,13 +95,7 @@
             background-color: #0056b3;
         }
 
-        footer {
-            text-align: center;
-            padding: 20px 0;
-            background-color: #333;
-            color: white;
-            margin-top: 30px;
-        }
+        
     </style>
 </head>
 <body>
@@ -116,52 +110,42 @@
                 <label for="nom">Nom :</label>
                 <input type="text" id="nom" name="nom" required>
             </div>
-
             <div class="form-group">
                 <label for="prenom">Prénom :</label>
                 <input type="text" id="prenom" name="prenom" required>
             </div>
-
             <div class="form-group">
                 <label for="date_naissance">Date de naissance :</label>
                 <input type="date" id="date_naissance" name="date_naissance" required>
             </div>
-
             <div class="form-group">
                 <label for="email">Email :</label>
                 <input type="email" id="email" name="email" required>
             </div>
-
             <div class="form-group">
                 <label for="telephone">Téléphone :</label>
                 <input type="text" id="telephone" name="telephone" required>
             </div>
-
             <div class="form-group">
                 <label for="ville">Ville :</label>
                 <input type="text" id="ville" name="ville" required>
             </div>
-
             <div class="form-group">
                 <label for="code_postal">Code postal :</label>
                 <input type="text" id="code_postal" name="code_postal" required>
             </div>
-
             <div class="form-group">
                 <label for="adresse_complete">Adresse complète :</label>
                 <textarea id="adresse_complete" name="adresse_complete" rows="3" required></textarea>
             </div>
-
             <div class="form-group">
                 <label for="mot_de_passe">Mot de passe :</label>
                 <input type="password" id="mot_de_passe" name="mot_de_passe" required>
             </div>
-
             <div class="form-group">
                 <label for="confirmation_mot_de_passe">Confirmation du mot de passe :</label>
                 <input type="password" id="confirmation_mot_de_passe" name="confirmation_mot_de_passe" required>
             </div>
-
             <!-- Section: Type of Card -->
             <h2>Type de Carte d'Abonnement</h2>
             <div class="radio-group">
@@ -175,31 +159,25 @@
                     <input type="radio" name="type_carte" value="Premium"> Premium
                 </label>
             </div>
-
             <!-- Section: File Uploads -->
             <h2>Documents à Télécharger</h2>
             <div class="form-group">
                 <label class="file-label" for="photo_profil">Photo de profil :</label>
                 <input class="file-input" type="file" id="photo_profil" name="photo_profil" accept="image/*" required>
             </div>
-
             <div class="form-group">
                 <label class="file-label" for="piece_identite">Pièce d'identité :</label>
                 <input class="file-input" type="file" id="piece_identite" name="piece_identite" accept=".pdf,.jpg,.png" required>
             </div>
-
             <div class="form-group">
                 <label class="file-label" for="recu_paiement">Reçu de paiement :</label>
                 <input class="file-input" type="file" id="recu_paiement" name="recu_paiement" accept=".pdf,.jpg,.png" required>
             </div>
-
-            <!-- Consent and Submit -->
             <div class="checkbox-group">
                 <label>
                     <input type="checkbox" name="consentement" required> J'accepte les termes et conditions générales
                 </label>
             </div>
-
             <button type="submit" class="submit-btn">S'inscrire</button>
         </form>
     </div>
