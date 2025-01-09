@@ -1,25 +1,74 @@
 <?php
 require_once 'config.php';
-//require_once 'functions.php';
+require_once __DIR__ . '/../../models/Partenaire.php';
 
-// Initialisation de la connexion
 $database = new Database();
 $db = $database->connect();
 
-$ville_filter = isset($_GET['ville']) ? $_GET['ville'] : '';
-$categorie_filter = isset($_GET['categorie']) ? $_GET['categorie'] : '';
+$error = '';
+$success = '';
 
-$query_villes = "SELECT DISTINCT ville FROM partenaires ORDER BY ville";
-$query_categories = "SELECT id, nom FROM categorie_partenaire ORDER BY nom";
+// Instancier le modèle Partenaire
+$partenaireModel = new Partenaire($db);
 
-$villes = $db->query($query_villes)->fetchAll(PDO::FETCH_COLUMN);
-$categories = $db->query($query_categories)->fetchAll(PDO::FETCH_ASSOC);
+// Récupérer les villes et catégories pour les filtres
+$villes = $db->query("SELECT DISTINCT ville FROM partenaires ORDER BY ville")->fetchAll(PDO::FETCH_COLUMN);
+$categories = $db->query("SELECT id, nom FROM categorie_partenaire ORDER BY nom")->fetchAll(PDO::FETCH_ASSOC);
 
-$query = "SELECT p.*, cp.nom as categorie_nom,
-          (SELECT COUNT(*) FROM utilisation_remises ur WHERE ur.id_partenaire = p.id) as total_utilisations,
-          (SELECT COUNT(DISTINCT id_membre) FROM utilisation_remises ur WHERE ur.id_partenaire = p.id) as total_membres
-          FROM partenaires p
-          LEFT JOIN categorie_partenaire cp ON p.id_categorie_partenaire = cp.id
+// Gestion des actions (ajout, modification, suppression)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'])) {
+        switch ($_POST['action']) {
+            case 'add':
+                $partenaireModel->nom = $_POST['nom'];
+                $partenaireModel->id_categorie_partenaire = $_POST['categorie'];
+                $partenaireModel->ville = $_POST['ville'];
+                $partenaireModel->remise = $_POST['remise'];
+                $partenaireModel->details = $_POST['details'];
+                $partenaireModel->logo = ''; // Gérer l'upload du logo si nécessaire
+
+                if ($partenaireModel->create()) {
+                    $success = "Partenaire ajouté avec succès!";
+                } else {
+                    $error = "Erreur lors de l'ajout du partenaire.";
+                }
+                break;
+
+            case 'edit':
+                $partenaireModel->id = $_POST['id'];
+                $partenaireModel->nom = $_POST['nom'];
+                $partenaireModel->id_categorie_partenaire = $_POST['categorie'];
+                $partenaireModel->ville = $_POST['ville'];
+                $partenaireModel->remise = $_POST['remise'];
+                $partenaireModel->details = $_POST['details'];
+                $partenaireModel->logo = ''; // Gérer l'upload du logo si nécessaire
+
+                if ($partenaireModel->update()) {
+                    $success = "Partenaire mis à jour avec succès!";
+                } else {
+                    $error = "Erreur lors de la mise à jour du partenaire.";
+                }
+                break;
+
+            case 'delete':
+                $partenaireModel->id = $_POST['id'];
+                if ($partenaireModel->delete()) {
+                    $success = "Partenaire supprimé avec succès!";
+                } else {
+                    $error = "Erreur lors de la suppression du partenaire.";
+                }
+                break;
+        }
+    }
+}
+
+// Récupérer les partenaires avec filtres
+$ville_filter = $_GET['ville'] ?? '';
+$categorie_filter = $_GET['categorie'] ?? '';
+
+$query = "SELECT p.*, cp.nom as categorie_nom 
+          FROM partenaires p 
+          LEFT JOIN categorie_partenaire cp ON p.id_categorie_partenaire = cp.id 
           WHERE 1=1";
 
 if (!empty($ville_filter)) {
@@ -42,19 +91,6 @@ if (!empty($categorie_filter)) {
 
 $stmt->execute();
 $partenaires = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        switch ($_POST['action']) {
-            case 'add':
-                break;
-            case 'edit':
-                break;
-            case 'delete':
-                break;
-        }
-    }
-}
 ?>
 
 <?php require_once 'header.php'; ?>
@@ -67,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </button>
     </div>
 
+    <!-- Filtres -->
     <div class="card mb-4">
         <div class="card-body">
             <form method="GET" class="row g-3">
@@ -74,8 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <select name="ville" class="form-select">
                         <option value="">Toutes les villes</option>
                         <?php foreach ($villes as $ville): ?>
-                            <option value="<?php echo htmlspecialchars($ville); ?>"
-                                    <?php echo $ville_filter === $ville ? 'selected' : ''; ?>>
+                            <option value="<?php echo htmlspecialchars($ville); ?>" <?php echo $ville_filter === $ville ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($ville); ?>
                             </option>
                         <?php endforeach; ?>
@@ -85,8 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <select name="categorie" class="form-select">
                         <option value="">Toutes les catégories</option>
                         <?php foreach ($categories as $categorie): ?>
-                            <option value="<?php echo $categorie['id']; ?>"
-                                    <?php echo $categorie_filter == $categorie['id'] ? 'selected' : ''; ?>>
+                            <option value="<?php echo $categorie['id']; ?>" <?php echo $categorie_filter == $categorie['id'] ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($categorie['nom']); ?>
                             </option>
                         <?php endforeach; ?>
@@ -100,6 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
+    <!-- Tableau des partenaires -->
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
@@ -110,32 +146,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <th>Catégorie</th>
                             <th>Ville</th>
                             <th>Remise</th>
-                            <th>Utilisations</th>
-                            <th>Membres</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($partenaires as $partenaire): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($partenaire['nom']); ?></td>
-                            <td><?php echo htmlspecialchars($partenaire['categorie_nom']); ?></td>
-                            <td><?php echo htmlspecialchars($partenaire['ville']); ?></td>
-                            <td><?php echo $partenaire['remise'] . '%'; ?></td>
-                            <td><?php echo $partenaire['total_utilisations']; ?></td>
-                            <td><?php echo $partenaire['total_membres']; ?></td>
-                            <td>
-                                <button class="btn btn-sm btn-info" onclick="viewStats(<?php echo $partenaire['id']; ?>)">
-                                    <i class="fas fa-chart-bar"></i>
-                                </button>
-                                <button class="btn btn-sm btn-primary" onclick="editPartenaire(<?php echo $partenaire['id']; ?>)">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger" onclick="deletePartenaire(<?php echo $partenaire['id']; ?>)">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td><?php echo htmlspecialchars($partenaire['nom']); ?></td>
+                                <td><?php echo htmlspecialchars($partenaire['categorie_nom']); ?></td>
+                                <td><?php echo htmlspecialchars($partenaire['ville']); ?></td>
+                                <td><?php echo $partenaire['remise'] . '%'; ?></td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" onclick="viewStats(<?php echo $partenaire['id']; ?>)">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-primary" onclick="editPartenaire(<?php echo $partenaire['id']; ?>)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deletePartenaire(<?php echo $partenaire['id']; ?>)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -144,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
-
+<!-- Modal d'ajout -->
 <div class="modal fade" id="addPartenaireModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -194,15 +226,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script>
 function viewStats(id) {
     // Afficher les statistiques du partenaire
+    alert("Statistiques du partenaire ID: " + id);
 }
 
 function editPartenaire(id) {
     // Ouvrir le modal d'édition avec les données du partenaire
+    alert("Éditer le partenaire ID: " + id);
 }
 
 function deletePartenaire(id) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce partenaire ?')) {
         // Supprimer le partenaire
+        fetch('gestion_partenaires.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `action=delete&id=${id}`,
+        })
+        .then(response => response.text())
+        .then(data => {
+            location.reload(); // Recharger la page après suppression
+        })
+        .catch(error => console.error('Error:', error));
     }
 }
 
