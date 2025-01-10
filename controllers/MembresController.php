@@ -8,7 +8,11 @@ class MembreController {
     public function __construct() {
         // Create a new Database instance and connect
         $database = new Database();
-        $db = $database->connect(); // Use the connect() method from db.php
+        $db = $database->connect();
+
+        if ($db === null) {
+            die("Database connection failed.");
+        }
 
         // Initialize the Membre model with the database connection
         $this->membreModel = new Membre($db);
@@ -19,18 +23,29 @@ class MembreController {
      */
     public function register() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Debugging: Print the contents of $_POST
+            echo "<pre>";
+            print_r($_POST);
+            echo "</pre>";
+
+            // Check if 'type_carte' is set in $_POST
+            if (!isset($_POST['type_carte'])) {
+                echo "<script>alert('Erreur : Type de carte d\'abonnement non sélectionné.');</script>";
+                return;
+            }
+
             // Validate and sanitize form inputs
-            $prenom = htmlspecialchars(strip_tags($_POST['prenom']));
-            $nom = htmlspecialchars(strip_tags($_POST['nom']));
-            $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-            $mot_de_passe = password_hash($_POST['mot_de_passe'], PASSWORD_DEFAULT);
+            $prenom = htmlspecialchars(strip_tags($_POST['prenom'] ?? ''));
+            $nom = htmlspecialchars(strip_tags($_POST['nom'] ?? ''));
+            $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
+            $mot_de_passe = password_hash($_POST['mot_de_passe'] ?? '', PASSWORD_DEFAULT);
             $numero_identite = isset($_POST['numero_identite']) ? htmlspecialchars(strip_tags($_POST['numero_identite'])) : '';
-            $telephone = htmlspecialchars(strip_tags($_POST['telephone']));
-            $adresse = htmlspecialchars(strip_tags($_POST['adresse_complete']));
-            $ville = htmlspecialchars(strip_tags($_POST['ville']));
-            $code_postal = htmlspecialchars(strip_tags($_POST['code_postal']));
-            $type_carte = htmlspecialchars(strip_tags($_POST['type_carte']));
-            $date_naissance = htmlspecialchars(strip_tags($_POST['date_naissance']));
+            $telephone = htmlspecialchars(strip_tags($_POST['telephone'] ?? ''));
+            $adresse = htmlspecialchars(strip_tags($_POST['adresse_complete'] ?? ''));
+            $ville = htmlspecialchars(strip_tags($_POST['ville'] ?? ''));
+            $code_postal = htmlspecialchars(strip_tags($_POST['code_postal'] ?? ''));
+            $type_carte = htmlspecialchars(strip_tags($_POST['type_carte'] ?? ''));
+            $date_naissance = htmlspecialchars(strip_tags($_POST['date_naissance'] ?? ''));
 
             // Handle file uploads
             $photo_profil = $this->uploadFile('photo_profil');
@@ -38,28 +53,21 @@ class MembreController {
 
             // Check if all files were uploaded successfully
             if ($photo_profil && $recu_paiement) {
-                // Get the subscription type ID
-                $id_type_abonnement = $this->getSubscriptionTypeId($type_carte);
-
-                if ($id_type_abonnement === null) {
-                    echo "<script>alert('Erreur : Type de carte d\'abonnement invalide.');</script>";
-                    return;
-                }
-
                 // Set member properties
-                $this->membreModel->prenom = $prenom;
-                $this->membreModel->nom = $nom;
-                $this->membreModel->email = $email;
-                $this->membreModel->mot_de_passe = $mot_de_passe;
-                $this->membreModel->numero_identite = $numero_identite;
-                $this->membreModel->telephone = $telephone;
-                $this->membreModel->adresse = $adresse;
-                $this->membreModel->photo = $photo_profil;
-                $this->membreModel->recu_paiement = $recu_paiement;
-                $this->membreModel->id_type_abonnement = $id_type_abonnement;
-                $this->membreModel->date_inscription = date('Y-m-d');
-                $this->membreModel->date_expiration = date('Y-m-d', strtotime('+1 year'));
-                $this->membreModel->statut = 'En attente'; // Default status
+   // Set member properties
+$this->membreModel->prenom = $prenom;
+$this->membreModel->nom = $nom;
+$this->membreModel->email = $email;
+$this->membreModel->mot_de_passe = $mot_de_passe;
+$this->membreModel->numero_identite = $numero_identite;
+$this->membreModel->telephone = $telephone;
+$this->membreModel->adresse = $adresse;
+$this->membreModel->photo = $photo_profil;
+$this->membreModel->recu_paiement = $recu_paiement;
+$this->membreModel->nom_type_abonnement = $type_carte; // Use nom_type_abonnement
+$this->membreModel->date_inscription = date('Y-m-d');
+$this->membreModel->date_expiration = date('Y-m-d', strtotime('+1 year'));
+$this->membreModel->statut = 'En attente'; // Default status
 
                 // Create the member in the database
                 if ($this->membreModel->create()) {
@@ -117,22 +125,6 @@ class MembreController {
             }
         }
         return false;
-    }
-
-    /**
-     * Gets the subscription type ID based on the subscription name.
-     *
-     * @param string $type_carte The name of the subscription type.
-     * @return int|null The subscription type ID if found, otherwise null.
-     */
-    private function getSubscriptionTypeId($type_carte) {
-        $subscriptionTypes = $this->membreModel->getAllSubscriptionTypes();
-        foreach ($subscriptionTypes as $type) {
-            if ($type['nom'] === $type_carte) {
-                return $type['id'];
-            }
-        }
-        return null;
     }
 }
 ?>

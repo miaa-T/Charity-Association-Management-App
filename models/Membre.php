@@ -12,8 +12,8 @@ class Membre {
     public $telephone;
     public $adresse;
     public $photo;
-    public $recu_paiement; // Updated to match the table structure
-    public $id_type_abonnement;
+    public $recu_paiement;
+    public $nom_type_abonnement; // Changed from id_type_abonnement to nom_type_abonnement
     public $date_inscription;
     public $date_expiration;
     public $cree_le;
@@ -31,11 +31,11 @@ class Membre {
      */
     public function create() {
         $query = "INSERT INTO " . $this->table . " 
-                  (prenom, nom, email, mot_de_passe, numero_identite, telephone, adresse, photo, recu_paiement, id_type_abonnement, date_inscription, date_expiration, statut) 
-                  VALUES (:prenom, :nom, :email, :mot_de_passe, :numero_identite, :telephone, :adresse, :photo, :recu_paiement, :id_type_abonnement, :date_inscription, :date_expiration, :statut)";
-
+                  (prenom, nom, email, mot_de_passe, numero_identite, telephone, adresse, photo, recu_paiement, nom_type_abonnement, date_inscription, date_expiration, statut) 
+                  VALUES (:prenom, :nom, :email, :mot_de_passe, :numero_identite, :telephone, :adresse, :photo, :recu_paiement, :nom_type_abonnement, :date_inscription, :date_expiration, :statut)";
+    
         $stmt = $this->conn->prepare($query);
-
+    
         // Bind values
         $stmt->bindParam(':prenom', $this->prenom);
         $stmt->bindParam(':nom', $this->nom);
@@ -45,12 +45,12 @@ class Membre {
         $stmt->bindParam(':telephone', $this->telephone);
         $stmt->bindParam(':adresse', $this->adresse);
         $stmt->bindParam(':photo', $this->photo);
-        $stmt->bindParam(':recu_paiement', $this->recu_paiement); // Updated to match the table structure
-        $stmt->bindParam(':id_type_abonnement', $this->id_type_abonnement);
+        $stmt->bindParam(':recu_paiement', $this->recu_paiement);
+        $stmt->bindParam(':nom_type_abonnement', $this->nom_type_abonnement);
         $stmt->bindParam(':date_inscription', $this->date_inscription);
         $stmt->bindParam(':date_expiration', $this->date_expiration);
         $stmt->bindParam(':statut', $this->statut);
-
+    
         // Execute the query
         if ($stmt->execute()) {
             return true;
@@ -80,7 +80,7 @@ class Membre {
      */
     public function update() {
         $query = "UPDATE " . $this->table . " 
-                  SET prenom = :prenom, nom = :nom, email = :email, mot_de_passe = :mot_de_passe, numero_identite = :numero_identite, telephone = :telephone, adresse = :adresse, photo = :photo, recu_paiement = :recu_paiement, id_type_abonnement = :id_type_abonnement, date_inscription = :date_inscription, date_expiration = :date_expiration, statut = :statut
+                  SET prenom = :prenom, nom = :nom, email = :email, mot_de_passe = :mot_de_passe, numero_identite = :numero_identite, telephone = :telephone, adresse = :adresse, photo = :photo, recu_paiement = :recu_paiement, nom_type_abonnement = :nom_type_abonnement, date_inscription = :date_inscription, date_expiration = :date_expiration, statut = :statut
                   WHERE id = :id";
 
         $stmt = $this->conn->prepare($query);
@@ -95,8 +95,8 @@ class Membre {
         $stmt->bindParam(':telephone', $this->telephone);
         $stmt->bindParam(':adresse', $this->adresse);
         $stmt->bindParam(':photo', $this->photo);
-        $stmt->bindParam(':recu_paiement', $this->recu_paiement); // Updated to match the table structure
-        $stmt->bindParam(':id_type_abonnement', $this->id_type_abonnement);
+        $stmt->bindParam(':recu_paiement', $this->recu_paiement);
+        $stmt->bindParam(':nom_type_abonnement', $this->nom_type_abonnement);
         $stmt->bindParam(':date_inscription', $this->date_inscription);
         $stmt->bindParam(':date_expiration', $this->date_expiration);
         $stmt->bindParam(':statut', $this->statut);
@@ -170,14 +170,14 @@ class Membre {
     public function getAllMembers($filtre_statut = '', $filtre_type_abonnement = '', $tri = 'date_inscription DESC') {
         $query = "SELECT m.*, t.nom as type_abonnement 
                   FROM " . $this->table . " m 
-                  JOIN type_abonnement t ON m.id_type_abonnement = t.id 
+                  JOIN type_abonnement t ON m.nom_type_abonnement = t.nom 
                   WHERE 1=1";
 
         if (!empty($filtre_statut)) {
             $query .= " AND m.statut = :statut";
         }
         if (!empty($filtre_type_abonnement)) {
-            $query .= " AND m.id_type_abonnement = :type_abonnement";
+            $query .= " AND m.nom_type_abonnement = :type_abonnement";
         }
         $query .= " ORDER BY " . $tri;
 
@@ -203,7 +203,30 @@ class Membre {
         $query = "SELECT * FROM type_abonnement";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        // Debugging: Print the fetched subscription types
+        $subscriptionTypes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo "<pre>";
+        print_r($subscriptionTypes);
+        echo "</pre>";
+    
+        return $subscriptionTypes;
+    }
+
+    /**
+     * Get subscription type ID by name.
+     *
+     * @param string $nom The name of the subscription type.
+     * @return int|null The subscription type ID if found, otherwise null.
+     */
+    public function getSubscriptionTypeIdByName($nom) {
+        $query = "SELECT nom FROM type_abonnement WHERE nom = :nom";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':nom', $nom);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['nom'] : null;
     }
 }
 ?>

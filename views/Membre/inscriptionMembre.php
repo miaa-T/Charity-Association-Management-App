@@ -1,9 +1,14 @@
 <?php
-// Include the MembreController
+// Include the MembreController and TypeAbonnementController
 require_once __DIR__ . '/../../controllers/MembresController.php';
+require_once __DIR__ . '/../../controllers/TypeAbonnementController.php';
 
-// Create an instance of MembreController
+// Create instances of the controllers
 $membreController = new MembreController();
+$typeAbonnementController = new TypeAbonnementController();
+
+// Get all subscription types from the database
+$subscriptionTypes = $typeAbonnementController->getAll();
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -17,21 +22,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription Membre</title>
-    <link rel="stylesheet" href="../styles.css"> <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <?php include 'navbar.php'; ?> <!-- Include the navigation bar -->
+    <?php include 'navbar.php'; ?>
 
     <div class="container_inscription">
         <h1>Inscription Membre</h1>
-        <form method="POST" enctype="multipart/form-data">
-            <!-- Section: Personal Information -->
-            <h2>Informations Personnelles</h2>
-            <div class="form-group_inscription">
-                <label for="prenom">Prénom :</label>
-                <input type="text" id="prenom" name="prenom" required>
+
+        <!-- Payment Instructions Section -->
+        <div class="payment-instructions">
+            <h2>Instructions de Paiement</h2>
+            <p>Pour finaliser votre inscription, veuillez effectuer le paiement des frais d'abonnement sur le compte CCP suivant :</p>
+            <p><strong>Numéro de CCP :</strong> 123456789</p>
+            <p><strong>Titulaire du compte :</strong> Association Caritative</p>
+            <p><strong>Montant :</strong> Selon le type d'abonnement choisi (voir ci-dessous).</p>
+            <p>Après avoir effectué le paiement, veuillez télécharger le reçu de paiement dans le formulaire ci-dessous.</p>
+        </div>
+
+        <!-- Purpose Section -->
+        <div class="purpose-section">
+            <h2>Pourquoi devenir membre ?</h2>
+            <p>En devenant membre de notre association caritative, vous bénéficiez des avantages suivants :</p>
+            <ul>
+                <li>Accès à des <strong>remises exclusives</strong> chez nos partenaires (hôtels, cliniques, écoles, etc.).</li>
+                <li>Participation à des <strong>événements spéciaux</strong> réservés aux membres.</li>
+                <li>Possibilité de <strong>faire du bénévolat</strong> et de contribuer à des causes importantes.</li>
+                <li>Accès à un <strong>historique de vos dons</strong> et de vos contributions.</li>
+                <li>Une <strong>carte de membre électronique</strong> avec un code QR pour faciliter l'accès aux avantages.</li>
+            </ul>
+        </div>
+
+
+
+        <!-- Personal Information Section -->
+        <h2>Informations Personnelles</h2>
+        <form method="POST" enctype="multipart/form-data" class="two-column-form">
+    <!-- Subscription Types Section -->
+    <h2>Type de Carte d'Abonnement</h2>
+    <div class="subscription-types">
+        <?php foreach ($subscriptionTypes as $type): ?>
+            <div class="subscription-card">
+                <h3><?= htmlspecialchars($type['nom']) ?></h3>
+                <p>Prix annuel : <?= htmlspecialchars($type['prix_annuel']) ?> DZD</p>
+                <label>
+                    <input type="radio" name="type_carte" value="<?= htmlspecialchars($type['nom']) ?>" required> Choisir
+                </label>
             </div>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Personal Information Section -->
+    <h2>Informations Personnelles</h2>
+    <div class="form-group_inscription">
+        <label for="prenom">Prénom :</label>
+        <input type="text" id="prenom" name="prenom" required>
+    </div>
             <div class="form-group_inscription">
                 <label for="nom">Nom :</label>
                 <input type="text" id="nom" name="nom" required>
@@ -68,55 +115,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="confirmation_mot_de_passe">Confirmation du mot de passe :</label>
                 <input type="password" id="confirmation_mot_de_passe" name="confirmation_mot_de_passe" required>
             </div>
-            <label for="numero_identite">Numéro d'identité :</label>
-            <input type="text" id="numero_identite" name="numero_identite" required>
-            <!-- Section: Type of Card -->
-            <h2>Type de Carte d'Abonnement</h2>
-            <div class="radio-group_inscription">
-                <label>
-                    <input type="radio" name="type_carte" value="Classique" required> Classique
-                </label>
-                <label>
-                    <input type="radio" name="type_carte" value="Jeunes"> Jeunes
-                </label>
-                <label>
-                    <input type="radio" name="type_carte" value="Premium"> Premium
-                </label>
+            <div class="form-group_inscription">
+                <label for="numero_identite">Numéro d'identité :</label>
+                <input type="text" id="numero_identite" name="numero_identite" required>
             </div>
 
-            <!-- Section: File Uploads -->
-            <h2>Documents à Télécharger</h2>
-            <div class="form-group_inscription">
+            <!-- File Uploads Section -->
+            <h2 class="full-width">Documents à Télécharger</h2>
+            <div class="form-group_inscription full-width">
                 <label class="file-label_inscription" for="photo_profil">
                     <i class="fa fa-upload"></i> Photo de profil
                 </label>
                 <input class="file-input_inscription" type="file" id="photo_profil" name="photo_profil" accept="image/*" required>
             </div>
-            <div class="form-group_inscription">
+            <div class="form-group_inscription full-width">
                 <label class="file-label_inscription" for="piece_identite">
                     <i class="fa fa-upload"></i> Pièce d'identité
                 </label>
                 <input class="file-input_inscription" type="file" id="piece_identite" name="piece_identite" accept=".pdf,.jpg,.png" required>
             </div>
-            <div class="form-group_inscription">
+            <div class="form-group_inscription full-width">
                 <label class="file-label_inscription" for="recu_paiement">
                     <i class="fa fa-upload"></i> Reçu de paiement
                 </label>
                 <input class="file-input_inscription" type="file" id="recu_paiement" name="recu_paiement" accept=".pdf,.jpg,.png" required>
             </div>
 
-            <!-- Section: Terms and Conditions -->
-            <div class="checkbox-group_inscription">
+            <!-- Terms and Conditions Section -->
+            <div class="checkbox-group_inscription full-width">
                 <label>
                     <input type="checkbox" name="consentement" required> J'accepte les termes et conditions générales
                 </label>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="submit-btn_inscription">S'inscrire</button>
-        </form>
+            <button type="submit" class="submit-btn_inscription full-width">S'inscrire</button>        </form>
     </div>
 
-    <?php include 'footer.php'; ?> <!-- Include the footer -->
+    <?php include 'footer.php'; ?>
 </body>
 </html>
