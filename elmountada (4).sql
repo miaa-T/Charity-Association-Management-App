@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jan 10, 2025 at 10:17 AM
+-- Generation Time: Jan 10, 2025 at 01:15 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -293,7 +293,7 @@ CREATE TABLE IF NOT EXISTS `membres` (
   `adresse` text,
   `photo` text,
   `recu_paiement` text,
-  `id_type_abonnement` int NOT NULL,
+  `nom_type_abonnement` varchar(50) NOT NULL,
   `date_inscription` date NOT NULL,
   `date_expiration` date NOT NULL,
   `cree_le` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -301,16 +301,19 @@ CREATE TABLE IF NOT EXISTS `membres` (
   `statut` enum('En attente','Approuvé','Rejeté') DEFAULT 'En attente',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `numero_identite` (`numero_identite`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `numero_identite` (`numero_identite`),
+  KEY `fk_membres_type_abonnement` (`nom_type_abonnement`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `membres`
 --
 
-INSERT INTO `membres` (`id`, `prenom`, `nom`, `email`, `mot_de_passe`, `numero_identite`, `telephone`, `adresse`, `photo`, `recu_paiement`, `id_type_abonnement`, `date_inscription`, `date_expiration`, `cree_le`, `modifie_le`, `statut`) VALUES
-(1, 'prenom1', 'nom1', 'email1@example.com', 'password123', '123456789', '1234567890', 'alg', 'Images/photo1.jpg', 'recu1.jpg', 1, '2023-10-01', '2023-11-01', '2025-01-09 08:59:14', '2025-01-09 08:59:14', 'Approuvé'),
-(2, 'prenom2', 'nom2', 'email2@example.com', 'password456', '987654321', '0987654321', 'alg', 'Images/photo2.jpg', 'recu2.jpg', 2, '2023-10-05', '2024-01-05', '2025-01-09 08:59:14', '2025-01-09 09:27:30', 'Rejeté');
+INSERT INTO `membres` (`id`, `prenom`, `nom`, `email`, `mot_de_passe`, `numero_identite`, `telephone`, `adresse`, `photo`, `recu_paiement`, `nom_type_abonnement`, `date_inscription`, `date_expiration`, `cree_le`, `modifie_le`, `statut`) VALUES
+(3, 'mahdia', 'toubal', 'mahdia.toubal@gmail.com', '$2y$10$SzGRrOryhpbDIFXbaFPlKu0LP6tc6mvgIJUfoIpx7kr3Ceeojrkxa', '0123', '0799518055', 'Batti medea center', 'C:\\wamp64\\www\\projet\\controllers/../uploads/photos/6780fe816bf77_blood_donation.jpg', 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/6780fe816c26f_blood_donation.jpg', 'Classique', '2025-01-10', '2026-01-10', '2025-01-10 10:03:29', '2025-01-10 10:03:29', 'En attente'),
+(4, 'mahdiafghdy', 'toubalhdur', 'mahdia.touball@gmail.com', '$2y$10$ik4Hbmkj1Eu2AfknU4oiDugNH9fzf8XWNZ06CYrnkPZt8m0yo4Fxi', '0123456', '0799518055', 'Batti medea center', 'C:\\wamp64\\www\\projet\\controllers/../uploads/photos/678100139419d_image1.png', 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/678100139445f_image3.png', 'Premium', '2025-01-10', '2026-01-10', '2025-01-10 10:10:11', '2025-01-10 10:10:11', 'En attente'),
+(5, 'mahdianbhb', 'toubalnk', 'mahdjkhia.toubal@gmail.com', '$2y$10$uJCcv3rmpEFeuXt4redAR.4wnGs6bAOCmOxZwShDcnQ6aR0n555WG', '01470252', '0799518055', 'Batti medea center', 'C:\\wamp64\\www\\projet\\controllers/../uploads/photos/67811cfc1e586_beach_cleaning.jpg', 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/67811cfc1e80d_beach_cleaning.jpg', 'Classique', '2025-01-10', '2026-01-10', '2025-01-10 13:13:32', '2025-01-10 13:13:32', 'En attente'),
+(6, 'bjguj', 'nhjkhkj', 'test@gmail.com', '$2y$10$pltPEgyySesCAfqe/zbn5eKdXjg/qRHRQX.DhIa3gDMsvFnXXnth6', '265', '0541651', 'Batti medea center', 'C:\\wamp64\\www\\projet\\controllers/../uploads/photos/67811d5357736_blood_donation.jpg', 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/67811d5357a86_beach_cleaning.jpg', 'Jeunes', '2025-01-10', '2026-01-10', '2025-01-10 13:14:59', '2025-01-10 13:14:59', 'En attente');
 
 -- --------------------------------------------------------
 
@@ -465,22 +468,20 @@ INSERT INTO `statut_benevolat` (`id`, `nom`) VALUES
 
 DROP TABLE IF EXISTS `type_abonnement`;
 CREATE TABLE IF NOT EXISTS `type_abonnement` (
-  `id` int NOT NULL AUTO_INCREMENT,
   `nom` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nom` (`nom`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `prix_annuel` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`nom`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `type_abonnement`
 --
 
-INSERT INTO `type_abonnement` (`id`, `nom`) VALUES
-(1, 'Classique'),
-(2, 'Premium'),
-(3, 'Mensuel'),
-(4, 'Trimestriel'),
-(5, 'Annuel');
+INSERT INTO `type_abonnement` (`nom`, `prix_annuel`) VALUES
+('Classique', 500.00),
+('Premium', 1000.00),
+('Nouveau Type', 1000.00),
+('Jeunes', 300.00);
 
 -- --------------------------------------------------------
 
