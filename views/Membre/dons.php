@@ -140,34 +140,71 @@ if ($isUserLoggedIn) {
         <div id="volunteerMessage" style="display: none;"></div> <!-- Message de succès ou d'erreur -->
     </section>
 <?php endif; ?>
-        <!-- Request Assistance Section -->
-        <section class="assistance-request-section">
-            <h2>Demande d'Aide</h2>
-            <form class="assistance-form">
-                <div class="form-group">
-                    <input type="text" placeholder="Nom du bénéficiaire" required>
-                    <input type="text" placeholder="Prénom du bénéficiaire" required>
-                </div>
+   <!-- Request Assistance Section -->
+<section class="assistance-request-section">
+    <h2>Demande d'Aide</h2>
+    <p class="remarque">Remarque : Veuillez combiner tous vos documents dans un seul fichier PDF à soumettre.</p>
+    <form id="assistanceForm" class="assistance-form" enctype="multipart/form-data">
+        <div class="form-group">
+            <input type="text" name="nom" placeholder="Nom du bénéficiaire" required>
+            <input type="text" name="prenom" placeholder="Prénom du bénéficiaire" required>
+        </div>
 
-                <label for="birth-date">Date de naissance</label>
-                <input type="date" id="birth-date" required>
+        <label for="birth-date">Date de naissance</label>
+        <input type="date" id="birth-date" name="date_naissance" required>
 
-                <label for="aid-type">Type d'aide</label>
-                <select id="aid-type">
-                    <option value="" disabled selected>Choisir un type</option>
-                    <option value="food">Aide Alimentaire</option>
-                    <option value="financial">Aide Financière</option>
-                </select>
+        <label for="aid-type">Type d'aide</label>
+        <select id="aid-type" name="type_aide" required>
+            <option value="" disabled selected>Choisir un type</option>
+            <?php foreach ($types_aide as $aide): ?>
+                <option value="<?php echo $aide['type_aide']; ?>"><?php echo $aide['type_aide']; ?></option>
+            <?php endforeach; ?>
+        </select>
 
-                <label for="needs-description">Description des besoins</label>
-                <textarea id="needs-description" rows="4" placeholder="Décrivez les besoins"></textarea>
+        <label for="needs-description">Description des besoins</label>
+        <textarea id="needs-description" name="description" rows="4" placeholder="Décrivez les besoins" required></textarea>
 
-                <label for="assistance-document">Documents justificatifs</label>
-                <input type="file" id="assistance-document">
+        <label for="assistance-document">Documents justificatifs</label>
+        <input type="file" id="assistance-document" name="fichier" required>
 
-                <button type="submit" class="assistance-submit-btn">Soumettre la Demande</button>
-            </form>
-        </section>
+        <label for="numero-identite">Numéro d'identité</label>
+        <input type="text" id="numero-identite" name="numero_identite" placeholder="Numéro d'identité" required>
+
+        <button type="submit" class="assistance-submit-btn">Soumettre la Demande</button>
+    </form>
+    <div id="assistanceMessage" style="display: none;"></div>
+</section>
+
+<script>
+document.getElementById('assistanceForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    const formData = new FormData(this); // Get form data
+
+    fetch('../../controllers/AideController.php?action=handleAssistanceRequest', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        const messageDiv = document.getElementById('assistanceMessage');
+        messageDiv.style.display = 'block';
+        messageDiv.textContent = data.message;
+        messageDiv.style.color = data.success ? 'green' : 'red';
+
+        // Reset the form after 3 seconds
+        if (data.success) {
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+                document.getElementById('assistanceForm').reset();
+            }, 3000);
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+    });
+});
+</script>
 
         <!-- Available Aid Section -->
         <section class="aid-types-section">
@@ -269,7 +306,19 @@ if ($isUserLoggedIn) {
 
 .donation-submit-btn:hover {
     background-color: #2980b9;
-}</style>
+
+}
+
+.remarque {
+    font-size: 0.9rem;
+    color: #555;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-left: 4px solid #3498db;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+</style>
 <script>
 document.getElementById('volunteerForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Empêcher la soumission normale du formulaire
@@ -295,6 +344,7 @@ document.getElementById('volunteerForm').addEventListener('submit', function (e)
     .catch(error => {
         console.error('Erreur:', error);
     });
+    
 });
 </script>
 </html>

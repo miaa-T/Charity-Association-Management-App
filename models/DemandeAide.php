@@ -18,13 +18,15 @@ class DemandeAide {
         $this->conn = $db;
     }
 
-    public function create() {
-        $query = "INSERT INTO " . $this->table . " 
+    // Create a new assistance request
+    public function creer() {
+        $query = 'INSERT INTO ' . $this->table . ' 
                   (nom, prenom, date_naissance, type_aide, description, fichier, numero_identite) 
-                  VALUES (:nom, :prenom, :date_naissance, :type_aide, :description, :fichier, :numero_identite)";
+                  VALUES (:nom, :prenom, :date_naissance, :type_aide, :description, :fichier, :numero_identite)';
 
         $stmt = $this->conn->prepare($query);
 
+        // Bind parameters
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':prenom', $this->prenom);
         $stmt->bindParam(':date_naissance', $this->date_naissance);
@@ -33,26 +35,31 @@ class DemandeAide {
         $stmt->bindParam(':fichier', $this->fichier);
         $stmt->bindParam(':numero_identite', $this->numero_identite);
 
+        // Execute the query
         if ($stmt->execute()) {
             return true;
         }
         return false;
     }
 
-    public function read() {
-        $query = "SELECT * FROM " . $this->table;
+    // Read all assistance requests
+    public function lire() {
+        $query = 'SELECT * FROM ' . $this->table;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
     }
 
-    public function update() {
-        $query = "UPDATE " . $this->table . " 
-                  SET nom = :nom, prenom = :prenom, date_naissance = :date_naissance, type_aide = :type_aide, description = :description, fichier = :fichier, numero_identite = :numero_identite
-                  WHERE id = :id";
+    // Update an assistance request
+    public function modifier() {
+        $query = 'UPDATE ' . $this->table . ' 
+                  SET nom = :nom, prenom = :prenom, date_naissance = :date_naissance, type_aide = :type_aide, 
+                      description = :description, fichier = :fichier, numero_identite = :numero_identite 
+                  WHERE id = :id';
 
         $stmt = $this->conn->prepare($query);
 
+        // Bind parameters
         $stmt->bindParam(':id', $this->id);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':prenom', $this->prenom);
@@ -62,18 +69,20 @@ class DemandeAide {
         $stmt->bindParam(':fichier', $this->fichier);
         $stmt->bindParam(':numero_identite', $this->numero_identite);
 
+        // Execute the query
         if ($stmt->execute()) {
             return true;
         }
         return false;
     }
 
-    public function delete() {
-        $query = "DELETE FROM " . $this->table . " WHERE id = :id";
+    // Delete an assistance request
+    public function supprimer() {
+        $query = 'DELETE FROM ' . $this->table . ' WHERE id = :id';
         $stmt = $this->conn->prepare($query);
-
         $stmt->bindParam(':id', $this->id);
 
+        // Execute the query
         if ($stmt->execute()) {
             return true;
         }
