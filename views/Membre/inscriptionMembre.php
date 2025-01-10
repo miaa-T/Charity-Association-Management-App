@@ -36,7 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h2>Instructions de Paiement</h2>
             <p>Pour finaliser votre inscription, veuillez effectuer le paiement des frais d'abonnement sur le compte CCP suivant :</p>
             <p><strong>Numéro de CCP :</strong> 123456789</p>
-            <p><strong>Titulaire du compte :</strong> Association Caritative</p>
+            <p><strong>Clé :</strong> 25</p>
+            <p><strong>Titulaire du compte :</strong> Association El Mountada</p>
             <p><strong>Montant :</strong> Selon le type d'abonnement choisi (voir ci-dessous).</p>
             <p>Après avoir effectué le paiement, veuillez télécharger le reçu de paiement dans le formulaire ci-dessous.</p>
         </div>
@@ -44,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Purpose Section -->
         <div class="purpose-section">
             <h2>Pourquoi devenir membre ?</h2>
-            <p>En devenant membre de notre association caritative, vous bénéficiez des avantages suivants :</p>
+            <p>En devenant membre de notre association caritative El Mountada, vous bénéficiez des avantages suivants :</p>
             <ul>
                 <li>Accès à des <strong>remises exclusives</strong> chez nos partenaires (hôtels, cliniques, écoles, etc.).</li>
                 <li>Participation à des <strong>événements spéciaux</strong> réservés aux membres.</li>

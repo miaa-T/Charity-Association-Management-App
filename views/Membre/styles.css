@@ -902,6 +902,106 @@ form button:hover {
     margin-bottom: 10px;
     display: block;
 }
+/* Style pour la section "Faire un don" */
+.make-donation-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.make-donation-section h2 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+/* Style pour les instructions de don */
+.donation-instructions {
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+}
+
+.donation-instructions p {
+    font-size: 1rem;
+    color: #34495e;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.donation-instructions strong {
+    color: #2c3e50;
+}
+
+/* Style pour le formulaire de don */
+.donation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.donation-form label {
+    font-size: 1rem;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.donation-form input[type="number"],
+.donation-form input[type="file"] {
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #34495e;
+    background-color: #ffffff;
+}
+
+.donation-form input[type="number"]:focus,
+.donation-form input[type="file"]:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+/* Style pour le bouton de soumission */
+.donation-submit-btn {
+    padding: 12px 20px;
+    background-color: #3498db;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.donation-submit-btn:hover {
+    background-color: #2980b9;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Profile Picture */
 .profile-pic {

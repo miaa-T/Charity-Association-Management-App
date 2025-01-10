@@ -5,7 +5,7 @@ class Benevolat {
 
     public $id;
     public $id_membre;
-    public $evenement;
+    public $evenement_id; // Utiliser evenement_id au lieu de evenement
     public $id_statut_benevolat;
     public $cree_le;
     public $modifie_le;
@@ -14,24 +14,21 @@ class Benevolat {
         $this->conn = $db;
     }
 
-    // Créer un nouveau bénévolat
     public function create() {
         $query = "INSERT INTO " . $this->table . " 
-                  (id_membre, evenement, id_statut_benevolat) 
-                  VALUES (:id_membre, :evenement, :id_statut_benevolat)";
+                  (id_membre, evenement_id, id_statut_benevolat, cree_le) 
+                  VALUES (:id_membre, :evenement_id, :id_statut_benevolat, NOW())";
 
         $stmt = $this->conn->prepare($query);
 
-        // Liaison des valeurs
         $stmt->bindParam(':id_membre', $this->id_membre);
-        $stmt->bindParam(':evenement', $this->evenement);
+        $stmt->bindParam(':evenement_id', $this->evenement_id); // Utiliser evenement_id
         $stmt->bindParam(':id_statut_benevolat', $this->id_statut_benevolat);
 
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
+        return $stmt->execute();
     }
+
+
 
     // Lire tous les bénévolats
     public function read() {

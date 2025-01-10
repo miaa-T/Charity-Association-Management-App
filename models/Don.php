@@ -92,7 +92,18 @@ class Don {
         }
         return false;
     }
-
+    public function readByUser($userId) {
+        $query = "SELECT id, montant, date_don, statut, recu 
+                  FROM " . $this->table . " 
+                  WHERE id_membre = :id_membre 
+                  ORDER BY date_don DESC";
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_membre', $userId);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     // Rejeter un don
     public function reject($id) {
         $query = "UPDATE " . $this->table . " SET statut = 'Rejeté' WHERE id = :id";

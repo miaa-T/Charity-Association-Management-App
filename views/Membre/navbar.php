@@ -12,7 +12,7 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
             <li><a href="Actualites.php" class="<?= $current_page == 'Actualites.php' ? 'active' : '' ?>">Actualités et Evenements</a></li>
             <li><a href="partenaires.php" class="<?= $current_page == 'partenaires.php' ? 'active' : '' ?>">Partenaires</a></li>
             <li><a href="remises.php" class="<?= $current_page == 'remises.php' ? 'active' : '' ?>">Remises et Avantages</a></li>
-            <li><a href="dons.php" class="<?= $current_page == 'dons.php' ? 'active' : '' ?>">Donations</a></li>
+            <li><a href="dons.php" class="<?= $current_page == 'dons.php' ? 'active' : '' ?>">Dons</a></li>
         </ul>
     </nav>
     <div class="social-icons">
