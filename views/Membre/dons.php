@@ -1,3 +1,7 @@
+<?php
+session_start(); // Start the session
+$current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

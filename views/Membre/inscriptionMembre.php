@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="container_inscription">
         <h1>Inscription Membre</h1>
-
+     
         <!-- Payment Instructions Section -->
         <div class="payment-instructions">
             <h2>Instructions de Paiement</h2>
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p><strong>Montant :</strong> Selon le type d'abonnement choisi (voir ci-dessous).</p>
             <p>Après avoir effectué le paiement, veuillez télécharger le reçu de paiement dans le formulaire ci-dessous.</p>
         </div>
-
+        
         <!-- Purpose Section -->
         <div class="purpose-section">
             <h2>Pourquoi devenir membre ?</h2>
@@ -56,25 +56,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-        <!-- Personal Information Section -->
-        <h2>Informations Personnelles</h2>
+        <br> <h2>Informations Personnelles</h2>
         <form method="POST" enctype="multipart/form-data" class="two-column-form">
-    <!-- Subscription Types Section -->
-    <h2>Type de Carte d'Abonnement</h2>
-    <div class="subscription-types">
-        <?php foreach ($subscriptionTypes as $type): ?>
-            <div class="subscription-card">
-                <h3><?= htmlspecialchars($type['nom']) ?></h3>
-                <p>Prix annuel : <?= htmlspecialchars($type['prix_annuel']) ?> DZD</p>
-                <label>
-                    <input type="radio" name="type_carte" value="<?= htmlspecialchars($type['nom']) ?>" required> Choisir
-                </label>
-            </div>
-        <?php endforeach; ?>
-    </div>
-
-    <!-- Personal Information Section -->
-    <h2>Informations Personnelles</h2>
+ <!-- Subscription Types Section -->
+<h2>Type de Carte d'Abonnement</h2>
+<div class="subscription-types-grid">
+    <?php foreach ($subscriptionTypes as $type): ?>
+        <div class="subscription-card">
+            <h3><?= htmlspecialchars($type['nom']) ?></h3>
+            <p>Prix annuel : <?= htmlspecialchars($type['prix_annuel']) ?> DZD</p>
+            <label>
+                <input type="radio" name="type_carte" value="<?= htmlspecialchars($type['nom']) ?>" required> Choisir
+            </label>
+        </div>
+    <?php endforeach; ?>
+</div>
     <div class="form-group_inscription">
         <label for="prenom">Prénom :</label>
         <input type="text" id="prenom" name="prenom" required>

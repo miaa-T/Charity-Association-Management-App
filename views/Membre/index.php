@@ -1,3 +1,13 @@
+<?php
+session_start(); // Start the session
+$current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
+
+// Include the controller
+require_once __DIR__ . '/../../controllers/EvenementsActualitesController.php';
+$controller = new EvenementsActualitesController();
+$actualites = $controller->getAllActualites();
+$evenements = $controller->getAllEvenements();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,72 +16,47 @@
     <title>Association Caritative</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
 </head>
 <body>
+  <!-- Include the navbar -->
   <?php include 'navbar.php'; ?>
 
-    <!-- Hero Section -->
+  <!-- Hero Section (only shown if the user is not logged in) -->
+  <?php if (!isset($_SESSION['user_id'])): ?>
     <section class="hero">
         <div class="hero-text">
             <h1>Faisons la différence ensemble!</h1>
             <p>Notre association soutient les plus démunis grâce à des dons, du bénévolat et des partenariats solidaires. Rejoignez-nous comme membre ou partenaire pour faire la différence et bénéficier d'avantages exclusifs !</p>
             <div class="hero-buttons">
                 <a href="#" class="btn member">Rejoindre en tant que Membre</a>
-                <a href="#" class="btn partner">Collaborer comme Partenaire</a>
             </div>
         </div>
         <div class="hero-image">
             <img src="../Images/img1.png" alt="Teamwork">
         </div>
     </section>
+  <?php endif; ?>
 
-    <script src="script.js"></script>
+  <!-- Mixed Actualités and Événements Section -->
+  <section class="news-page">
+      <h1>Actualités et Événements</h1>
 
-
-
-
-
-
-    <section class="news-section">
+      <!-- Display Actualités -->
       <h2>Actualités</h2>
       <div class="news-container">
-          <div class="news-card">
-              <h3>Histoires Inspirantes</h3>
-              <p>Grâce à vos dons, Rym, 12 ans, a pu bénéficier d’une opération vitale. Merci pour votre soutien !</p>
-          </div>
-          <div class="news-card">
-              <h3>Partenariats Nouveaux</h3>
-              <p>Bienvenue à notre nouveau partenaire, la clinique Santé+, offrant des remises exclusives à nos membres.</p>
-          </div>
-          <div class="news-card">
-              <h3>Mise à Jour des Avantages</h3>
-              <p>Découvrez nos nouvelles remises exclusives pour les membres chez nos partenaires : hôtels, restaurants, et plus encore.</p>
-          </div>
-          <div class="news-card">
-              <h3>Résultats d’une Collecte</h3>
-              <p>Nous avons collecté 2 tonnes de vêtements lors de notre dernière campagne – un grand merci à tous les donateurs !</p>
-          </div>
-          <div class="news-card">
-              <h3>Appel au Bénévolat</h3>
-              <p>Nous avons besoin de bénévoles pour notre collecte alimentaire du 15 janvier. Inscrivez-vous dès maintenant !</p>
-          </div>
-          <div class="news-card">
-              <h3>Lancement d’une Nouvelle Campagne</h3>
-              <p>Découvrez nos nouvelles remises exclusives pour les membres chez nos partenaires : hôtels, restaurants, et plus encore.</p>
-          </div>
+          <?php foreach ($actualites as $actualite): ?>
+              <div class="news-card">
+                  <img src="<?php echo htmlspecialchars($actualite['image']); ?>" alt="<?php echo htmlspecialchars($actualite['titre']); ?>">
+                  <h3><?php echo htmlspecialchars($actualite['titre']); ?></h3>
+                  <p><?php echo htmlspecialchars($actualite['description']); ?></p>
+                  <a href="#" class="btn">Lire plus</a>
+              </div>
+          <?php endforeach; ?>
       </div>
-      <div class="news-button">
-          <a href="#" class="btn">Voir toutes les actualités</a>
-      </div>
-  </section>
-  
 
+    
 
-
-
-
-
+  <!-- Advantages Section -->
   <section class="advantages-section">
     <h2>Avantages pour les Membres</h2>
     <div class="search-filter">
@@ -115,39 +100,37 @@
             <button class="pagination-btn">Suivant</button>
         </div>
     </div>
-</section>
+  </section>
 
+  <!-- Partners Section -->
+  <section class="partners-section">
+    <h2>Nos partenaires</h2>
+    <div class="partners-grid">
+        <div class="partner-logo">
+            <img src="../Images/partner1.png" alt="ComgTime">
+        </div>
+        <div class="partner-logo">
+            <img src="../Images/partner2.png" alt="Hotel">
+        </div>
+        <div class="partner-logo">
+            <img src="../Images/partner3.png" alt="Medical">
+        </div>
+        <div class="partner-logo">
+            <img src="../Images/partner4.png" alt="Education">
+        </div>
+        <div class="partner-logo">
+            <img src="../Images/partner5.png" alt="Business">
+        </div>
+        <div class="partner-logo">
+            <img src="../Images/partner6.png" alt="Spontor">
+        </div>
+    </div>
+  </section>
 
+ 
 
-<section class="partners-section">
-  <h2>Nos partenaires</h2>
-  <div class="partners-grid">
-      <div class="partner-logo">
-          <img src="../Images/partner1.png" alt="ComgTime">
-      </div>
-      <div class="partner-logo">
-          <img src="../Images/partner2.png" alt="Hotel">
-      </div>
-      <div class="partner-logo">
-          <img src="../Images/partner3.png" alt="Medical">
-      </div>
-      <div class="partner-logo">
-          <img src="../Images/partner4.png" alt="Education">
-      </div>
-      <div class="partner-logo">
-          <img src="../Images/partner5.png" alt="Business">
-      </div>
-      <div class="partner-logo">
-          <img src="../Images/partner6.png" alt="Spontor">
-      </div>
-  </div>
-</section>
-
-
-
-
-<?php include 'footer.php'; ?>
-
-
+  <script src="script.js"></script>
+   <!-- Footer -->
+  <?php include 'footer.php'; ?>
 </body>
 </html>

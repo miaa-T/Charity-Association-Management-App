@@ -1,3 +1,7 @@
+<?php
+session_start(); // Start the session
+$current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,7 +39,7 @@
             </div>
             <button class="edit-info-btn">Modifier mes informations</button>
         </section>
-        <?php include 'carteMembre.php'; ?>
+       
         <!-- Renewal Section -->
         <section class="renewal-section">
             <div class="renewal-alert">

@@ -1,17 +1,15 @@
 <?php
-session_start();
-$current_page = basename($_SERVER['PHP_SELF']);
+$current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
 ?>
+<head><link rel="stylesheet" href="styles.css"></head>
 <header class="navbar">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <div class="logo">
         <a href="index.php"><img src="../Images/logo_elmountada.png" alt="Logo"></a>
     </div>
     <nav>
         <ul class="nav-links">
-            <li><a href="index.php" class="<?= $current_page == 'index.php' ? 'active' : '' ?>">Acceuil</a></li>
-            <li><a href="Actualites.php" class="<?= $current_page == 'Actualites.php' ? 'active' : '' ?>">Actualités</a></li>
+            <li><a href="index.php" class="<?= $current_page == 'index.php' ? 'active' : '' ?>">Accueil</a></li>
+            <li><a href="Actualites.php" class="<?= $current_page == 'Actualites.php' ? 'active' : '' ?>">Actualités et Evenements</a></li>
             <li><a href="partenaires.php" class="<?= $current_page == 'partenaires.php' ? 'active' : '' ?>">Partenaires</a></li>
             <li><a href="remises.php" class="<?= $current_page == 'remises.php' ? 'active' : '' ?>">Remises et Avantages</a></li>
             <li><a href="dons.php" class="<?= $current_page == 'dons.php' ? 'active' : '' ?>">Donations</a></li>
@@ -24,12 +22,34 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <a href="#"><i class="fa fa-instagram"></i></a>
     </div>
     <div class="profile-pic">
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="monprofile.php">
-                <img src="<?= $_SESSION['photo'] ?>" alt="Profile Picture">
-            </a>
-        <?php else: ?>
-            <a href="login.php">Connexion</a>
-        <?php endif; ?>
-    </div>
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <div class="profile-container">
+            <img src="<?= $_SESSION['photo'] ?>" alt="Profile Picture" id="profile-pic">
+            <div class="profile-popup" id="profile-popup">
+                <a href="monprofile.php">Mon profil</a>
+                <a href="carteMembre.php">Ma carte membre</a>
+                <a href="logout.php">Déconnexion</a>
+            </div>
+        </div>
+    <?php else: ?>
+        <a href="login.php" class="connexion-btn">Connexion</a> <!-- Add a class here -->
+    <?php endif; ?>
+</div>
 </header>
+
+<script>
+    // JavaScript to toggle the popup menu
+    document.getElementById('profile-pic').addEventListener('click', function(event) {
+        event.stopPropagation(); // Prevent the click from bubbling up
+        const popup = document.getElementById('profile-popup');
+        popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Close the popup when clicking outside
+    document.addEventListener('click', function(event) {
+        const popup = document.getElementById('profile-popup');
+        if (event.target !== popup && !popup.contains(event.target)) {
+            popup.style.display = 'none';
+        }
+    });
+</script>
