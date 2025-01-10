@@ -11,77 +11,55 @@ class PartenaireController {
     }
 
     /**
-     * Get all partners.
+     * Get all partners grouped by categories.
      * 
      * @return array
      */
-    public function getAllPartners() {
-        return $this->partenaire->read();
-    }
+    public function getAllPartnersByCategory() {
+    $partners = $this->partenaire->read()->fetchAll(PDO::FETCH_ASSOC);
 
-    /**
-     * Get a single partner by ID.
-     * 
-     * @param int $id
-     * @return array
-     */
-    public function getPartnerById($id) {
-        return $this->partenaire->readOne($id);
-    }
+    $groupedPartners = [];
+    foreach ($partners as $partner) {
+        $categoryId = $partner['id_categorie_partenaire'];
 
-    /**
-     * Create a new partner.
-     * 
-     * @param array $data
-     * @return bool
-     */
-    public function createPartner($data) {
-        $this->partenaire->nom = $data['nom'];
-        $this->partenaire->ville = $data['ville'];
-        $this->partenaire->remise = $data['remise'];
-        $this->partenaire->details = $data['details'];
-        $this->partenaire->logo = $data['logo'];
+        // Fetch category name for grouping
+        $categoryName = $this->getCategoryName($categoryId);
 
-        if ($this->partenaire->create()) {
-            return true;
+        // Initialize the category group if it doesn't exist
+        if (!isset($groupedPartners[$categoryName])) {
+            $groupedPartners[$categoryName] = [];
         }
-        return false;
+
+        // Add partner to the category group
+        $groupedPartners[$categoryName][] = [
+            'name' => $partner['nom'],
+            'city' => $partner['ville'],
+            'discount' => $partner['remise'],
+            'details' => $partner['details'],
+            'logo' => $partner['logo']
+        ];
     }
 
-    /**
-     * Update an existing partner.
-     * 
-     * @param int $id
-     * @param array $data
-     * @return bool
-     */
-    public function updatePartner($id, $data) {
-        $this->partenaire->id = $id;
-        $this->partenaire->nom = $data['nom'];
-        $this->partenaire->ville = $data['ville'];
-        $this->partenaire->remise = $data['remise'];
-        $this->partenaire->details = $data['details'];
-        $this->partenaire->logo = $data['logo'];
+    return $groupedPartners;
+}
 
-        if ($this->partenaire->update()) {
-            return true;
-        }
-        return false;
-    }
 
     /**
-     * Delete a partner.
+     * Get the name of a category by its ID.
      * 
-     * @param int $id
-     * @return bool
+     * @param int $categoryId
+     * @return string
      */
-    public function deletePartner($id) {
-        $this->partenaire->id = $id;
+    private function getCategoryName($categoryId) {
+        $db = new Database();
+        $conn = $db->connect();
 
-        if ($this->partenaire->delete()) {
-            return true;
-        }
-        return false;
+        $query = "SELECT nom FROM categorie_partenaire WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':id', $categoryId);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['nom'] : 'Unknown';
     }
 }
-?>
