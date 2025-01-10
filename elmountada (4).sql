@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jan 10, 2025 at 05:29 PM
+-- Generation Time: Jan 10, 2025 at 05:46 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -171,7 +171,15 @@ CREATE TABLE IF NOT EXISTS `demandes_aides` (
   `statut` enum('En attente','Approuvée','Rejetée') DEFAULT 'En attente',
   PRIMARY KEY (`id`),
   KEY `numero_identite` (`numero_identite`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `demandes_aides`
+--
+
+INSERT INTO `demandes_aides` (`id`, `nom`, `prenom`, `date_naissance`, `type_aide`, `description`, `fichier`, `numero_identite`, `cree_le`, `modifie_le`, `statut`) VALUES
+(1, 'toubal', 'mahdia', '2025-01-21', 'Logementt', 'description de la demandee', '%PDF-1.4\n%äüöß\n2 0 obj\n<</Length 3 0 R/Filter/FlateDecode>>\nstream\nx', '02154', '2025-01-10 17:43:03', '2025-01-10 17:43:03', 'En attente'),
+(2, 'toubal', 'test2', '2025-01-01', 'Logementt', 'description2', '%PDF-1.4\n%äüöß\n2 0 obj\n<</Length 3 0 R/Filter/FlateDecode>>\nstream\nx', '0123456', '2025-01-10 17:43:41', '2025-01-10 17:43:41', 'En attente');
 
 -- --------------------------------------------------------
 
@@ -490,7 +498,7 @@ CREATE TABLE IF NOT EXISTS `types_aide` (
 --
 
 INSERT INTO `types_aide` (`id`, `type_aide`, `description`, `documents_necessaires`, `cree_le`, `modifie_le`) VALUES
-(1, 'Logement', 'Aide à l’hébergement temporaire et accompagnement dans la recherche de logement.', 'Pièce d’identité, justificatif de situation', '2025-01-10 16:02:26', '2025-01-10 16:02:26'),
+(1, 'Logementt', 'Aide à l’hébergement temporaire et accompagnement dans la recherche de logement.', 'Pièce d’identité, justificatif de situation', '2025-01-10 16:02:26', '2025-01-10 17:42:24'),
 (2, 'Soins', 'Accès aux soins médicaux et aide à l’obtention de couverture santé.', 'Carte vitale, ordonnances médicales', '2025-01-10 16:02:26', '2025-01-10 16:02:26'),
 (3, 'Aide Alimentaire', 'Fournit des colis alimentaires ou des bons d’achat pour les familles et individus dans le besoin.', 'Pièce d’identité', '2025-01-10 16:02:26', '2025-01-10 16:02:26'),
 (4, 'Éducation', 'Soutien scolaire et aide à la formation professionnelle.', 'Certificat de scolarité, bulletins scolaires', '2025-01-10 16:02:26', '2025-01-10 16:02:26'),
