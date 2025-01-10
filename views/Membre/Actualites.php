@@ -11,7 +11,7 @@
     <?php include 'navbar.php'; ?>
 
     <?php
-    require_once __DIR__ . '/../controllers/EvenementsActualitesController.php';
+    require_once __DIR__ . '/../../controllers/EvenementsActualitesController.php';
     $controller = new EvenementsActualitesController();
     $actualites = $controller->getAllActualites();
     $evenements = $controller->getAllEvenements();

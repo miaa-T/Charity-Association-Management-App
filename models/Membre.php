@@ -12,24 +12,27 @@ class Membre {
     public $telephone;
     public $adresse;
     public $photo;
-    public $carte_identite;
-    public $recu_paiement;
+    public $recu_paiement; // Updated to match the table structure
     public $id_type_abonnement;
     public $date_inscription;
     public $date_expiration;
     public $cree_le;
     public $modifie_le;
-    public $statut; // Nouvelle propriété pour le statut
+    public $statut;
 
     public function __construct($db) {
         $this->conn = $db;
     }
 
-    // Create a new membre
+    /**
+     * Create a new member.
+     *
+     * @return bool True if successful, otherwise false.
+     */
     public function create() {
         $query = "INSERT INTO " . $this->table . " 
-                  (prenom, nom, email, mot_de_passe, numero_identite, telephone, adresse, photo, carte_identite, recu_paiement, id_type_abonnement, date_inscription, date_expiration, statut) 
-                  VALUES (:prenom, :nom, :email, :mot_de_passe, :numero_identite, :telephone, :adresse, :photo, :carte_identite, :recu_paiement, :id_type_abonnement, :date_inscription, :date_expiration, :statut)";
+                  (prenom, nom, email, mot_de_passe, numero_identite, telephone, adresse, photo, recu_paiement, id_type_abonnement, date_inscription, date_expiration, statut) 
+                  VALUES (:prenom, :nom, :email, :mot_de_passe, :numero_identite, :telephone, :adresse, :photo, :recu_paiement, :id_type_abonnement, :date_inscription, :date_expiration, :statut)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -42,20 +45,27 @@ class Membre {
         $stmt->bindParam(':telephone', $this->telephone);
         $stmt->bindParam(':adresse', $this->adresse);
         $stmt->bindParam(':photo', $this->photo);
-        $stmt->bindParam(':carte_identite', $this->carte_identite);
-        $stmt->bindParam(':recu_paiement', $this->recu_paiement);
+        $stmt->bindParam(':recu_paiement', $this->recu_paiement); // Updated to match the table structure
         $stmt->bindParam(':id_type_abonnement', $this->id_type_abonnement);
         $stmt->bindParam(':date_inscription', $this->date_inscription);
         $stmt->bindParam(':date_expiration', $this->date_expiration);
-        $stmt->bindParam(':statut', $this->statut); // Ajout du statut
+        $stmt->bindParam(':statut', $this->statut);
 
+        // Execute the query
         if ($stmt->execute()) {
             return true;
+        } else {
+            // Print error for debugging
+            print_r($stmt->errorInfo());
+            return false;
         }
-        return false;
     }
 
-    // Read all membres
+    /**
+     * Read all members.
+     *
+     * @return PDOStatement The result set.
+     */
     public function read() {
         $query = "SELECT * FROM " . $this->table;
         $stmt = $this->conn->prepare($query);
@@ -63,10 +73,14 @@ class Membre {
         return $stmt;
     }
 
-    // Update a membre
+    /**
+     * Update a member's information.
+     *
+     * @return bool True if successful, otherwise false.
+     */
     public function update() {
         $query = "UPDATE " . $this->table . " 
-                  SET prenom = :prenom, nom = :nom, email = :email, mot_de_passe = :mot_de_passe, numero_identite = :numero_identite, telephone = :telephone, adresse = :adresse, photo = :photo, carte_identite = :carte_identite, recu_paiement = :recu_paiement, id_type_abonnement = :id_type_abonnement, date_inscription = :date_inscription, date_expiration = :date_expiration, statut = :statut
+                  SET prenom = :prenom, nom = :nom, email = :email, mot_de_passe = :mot_de_passe, numero_identite = :numero_identite, telephone = :telephone, adresse = :adresse, photo = :photo, recu_paiement = :recu_paiement, id_type_abonnement = :id_type_abonnement, date_inscription = :date_inscription, date_expiration = :date_expiration, statut = :statut
                   WHERE id = :id";
 
         $stmt = $this->conn->prepare($query);
@@ -81,20 +95,27 @@ class Membre {
         $stmt->bindParam(':telephone', $this->telephone);
         $stmt->bindParam(':adresse', $this->adresse);
         $stmt->bindParam(':photo', $this->photo);
-        $stmt->bindParam(':carte_identite', $this->carte_identite);
-        $stmt->bindParam(':recu_paiement', $this->recu_paiement);
+        $stmt->bindParam(':recu_paiement', $this->recu_paiement); // Updated to match the table structure
         $stmt->bindParam(':id_type_abonnement', $this->id_type_abonnement);
         $stmt->bindParam(':date_inscription', $this->date_inscription);
         $stmt->bindParam(':date_expiration', $this->date_expiration);
-        $stmt->bindParam(':statut', $this->statut); // Ajout du statut
+        $stmt->bindParam(':statut', $this->statut);
 
+        // Execute the query
         if ($stmt->execute()) {
             return true;
+        } else {
+            // Print error for debugging
+            print_r($stmt->errorInfo());
+            return false;
         }
-        return false;
     }
 
-    // Delete a membre
+    /**
+     * Delete a member.
+     *
+     * @return bool True if successful, otherwise false.
+     */
     public function delete() {
         $query = "DELETE FROM " . $this->table . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);
@@ -102,13 +123,22 @@ class Membre {
         // Bind ID
         $stmt->bindParam(':id', $this->id);
 
+        // Execute the query
         if ($stmt->execute()) {
             return true;
+        } else {
+            // Print error for debugging
+            print_r($stmt->errorInfo());
+            return false;
         }
-        return false;
     }
 
-    // Approuver un membre
+    /**
+     * Approve a member's registration.
+     *
+     * @param int $id The member's ID.
+     * @return bool True if successful, otherwise false.
+     */
     public function approveMember($id) {
         $query = "UPDATE " . $this->table . " SET statut = 'Approuvé' WHERE id = :id";
         $stmt = $this->conn->prepare($query);
@@ -116,7 +146,12 @@ class Membre {
         return $stmt->execute();
     }
 
-    // Rejeter un membre
+    /**
+     * Reject a member's registration.
+     *
+     * @param int $id The member's ID.
+     * @return bool True if successful, otherwise false.
+     */
     public function rejectMember($id) {
         $query = "UPDATE " . $this->table . " SET statut = 'Rejeté' WHERE id = :id";
         $stmt = $this->conn->prepare($query);
@@ -124,7 +159,14 @@ class Membre {
         return $stmt->execute();
     }
 
-    // Récupérer tous les membres avec filtrage et tri
+    /**
+     * Get all members with optional filtering and sorting.
+     *
+     * @param string $filtre_statut Filter by status.
+     * @param string $filtre_type_abonnement Filter by subscription type.
+     * @param string $tri Sorting order.
+     * @return array The filtered and sorted members.
+     */
     public function getAllMembers($filtre_statut = '', $filtre_type_abonnement = '', $tri = 'date_inscription DESC') {
         $query = "SELECT m.*, t.nom as type_abonnement 
                   FROM " . $this->table . " m 
@@ -152,7 +194,11 @@ class Membre {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Récupérer tous les types d'abonnement
+    /**
+     * Get all subscription types.
+     *
+     * @return array The list of subscription types.
+     */
     public function getAllSubscriptionTypes() {
         $query = "SELECT * FROM type_abonnement";
         $stmt = $this->conn->prepare($query);

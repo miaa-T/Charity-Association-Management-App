@@ -12,7 +12,7 @@
     <?php include 'navbar.php'; ?>
 
     <?php
-    require_once __DIR__ . '/../controllers/RemisesController.php';
+    require_once __DIR__ . '/../../controllers/RemisesController.php';
     $controller = new RemisesController();
 
     $search = $_GET['search'] ?? '';

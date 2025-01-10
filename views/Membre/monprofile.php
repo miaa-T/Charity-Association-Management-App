@@ -30,7 +30,7 @@
                     <p><strong>Expiration:</strong> 31/12/2025</p>
                 </div>
                 <div class="profile-photo">
-                    <img src="Images/userPic.jpg" alt="Profile Picture">
+                    <img src="../Images/userPic.jpg" alt="Profile Picture">
                 </div>
             </div>
             <button class="edit-info-btn">Modifier mes informations</button>

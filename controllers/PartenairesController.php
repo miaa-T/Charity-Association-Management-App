@@ -16,33 +16,37 @@ class PartenaireController {
      * @return array
      */
     public function getAllPartnersByCategory() {
-    $partners = $this->partenaire->read()->fetchAll(PDO::FETCH_ASSOC);
-
-    $groupedPartners = [];
-    foreach ($partners as $partner) {
-        $categoryId = $partner['id_categorie_partenaire'];
-
-        // Fetch category name for grouping
-        $categoryName = $this->getCategoryName($categoryId);
-
-        // Initialize the category group if it doesn't exist
-        if (!isset($groupedPartners[$categoryName])) {
-            $groupedPartners[$categoryName] = [];
+        $partners = $this->partenaire->read()->fetchAll(PDO::FETCH_ASSOC);
+    
+        $groupedPartners = [];
+        foreach ($partners as $partner) {
+            $categoryId = $partner['id_categorie_partenaire'];
+    
+            // Fetch category name for grouping
+            $categoryName = $this->getCategoryName($categoryId);
+    
+            // Initialize the category group if it doesn't exist
+            if (!isset($groupedPartners[$categoryName])) {
+                $groupedPartners[$categoryName] = [];
+            }
+    
+            // Add partner to the category group with all necessary fields
+            $groupedPartners[$categoryName][] = [
+                'id' => $partner['id'],
+                'nom' => $partner['nom'],
+                'ville' => $partner['ville'],
+                'remise' => $partner['remise'],
+                'details' => $partner['details'],
+                'logo' => $partner['logo'],
+                'categorie_nom' => $categoryName,
+                'cree_le' => $partner['cree_le'],
+                'modifie_le' => $partner['modifie_le'],
+                'description' => $partner['description']
+            ];
         }
-
-        // Add partner to the category group
-        $groupedPartners[$categoryName][] = [
-            'name' => $partner['nom'],
-            'city' => $partner['ville'],
-            'discount' => $partner['remise'],
-            'details' => $partner['details'],
-            'logo' => $partner['logo']
-        ];
+    
+        return $groupedPartners;
     }
-
-    return $groupedPartners;
-}
-
 
     /**
      * Get the name of a category by its ID.

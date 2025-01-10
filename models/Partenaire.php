@@ -12,6 +12,7 @@ class Partenaire {
     public $logo;
     public $cree_le;
     public $modifie_le;
+    public $description; // Add the new field
 
     public function __construct($db) {
         $this->conn = $db;
@@ -20,8 +21,8 @@ class Partenaire {
     // Créer un nouveau partenaire
     public function create() {
         $query = "INSERT INTO " . $this->table . " 
-                  (nom, id_categorie_partenaire, ville, remise, details, logo) 
-                  VALUES (:nom, :id_categorie_partenaire, :ville, :remise, :details, :logo)";
+                  (nom, id_categorie_partenaire, ville, remise, details, logo, description) 
+                  VALUES (:nom, :id_categorie_partenaire, :ville, :remise, :details, :logo, :description)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -32,6 +33,7 @@ class Partenaire {
         $stmt->bindParam(':remise', $this->remise);
         $stmt->bindParam(':details', $this->details);
         $stmt->bindParam(':logo', $this->logo);
+        $stmt->bindParam(':description', $this->description); // Bind the new field
 
         if ($stmt->execute()) {
             return true;
@@ -64,7 +66,8 @@ class Partenaire {
     // Mettre à jour un partenaire
     public function update() {
         $query = "UPDATE " . $this->table . " 
-                  SET nom = :nom, id_categorie_partenaire = :id_categorie_partenaire, ville = :ville, remise = :remise, details = :details, logo = :logo 
+                  SET nom = :nom, id_categorie_partenaire = :id_categorie_partenaire, ville = :ville, 
+                      remise = :remise, details = :details, logo = :logo, description = :description 
                   WHERE id = :id";
 
         $stmt = $this->conn->prepare($query);
@@ -77,6 +80,7 @@ class Partenaire {
         $stmt->bindParam(':remise', $this->remise);
         $stmt->bindParam(':details', $this->details);
         $stmt->bindParam(':logo', $this->logo);
+        $stmt->bindParam(':description', $this->description); // Bind the new field
 
         if ($stmt->execute()) {
             return true;
@@ -94,17 +98,6 @@ class Partenaire {
             return true;
         }
         return false;
-    }
-
-    // Récupérer les statistiques d'utilisation des remises
-    public function getUsageStats($id) {
-        $query = "SELECT COUNT(*) as total_utilisations, COUNT(DISTINCT id_membre) as total_membres 
-                  FROM utilisation_remises 
-                  WHERE id_partenaire = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
 ?>

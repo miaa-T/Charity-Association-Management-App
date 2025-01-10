@@ -1,5 +1,5 @@
--- Table structure for table `actualites`
---
+
+CREATE DATABASE IF NOT EXISTS elmountada;
 
 DROP TABLE IF EXISTS `actualites`;
 CREATE TABLE IF NOT EXISTS `actualites` (
@@ -12,9 +12,7 @@ CREATE TABLE IF NOT EXISTS `actualites` (
   PRIMARY KEY (`id`)
 );
 
---
--- Dumping data for table `actualites`
---
+
 
 INSERT INTO `actualites` (`id`, `titre`, `description`, `image`, `cree_le`, `modifie_le`) VALUES
 (1, 'Une Histoire de Réussites', 'Comment notre communauté a transformé la vie de Rym...', '', '2025-01-02 03:35:25', '2025-01-09 09:46:21'),
@@ -24,11 +22,7 @@ INSERT INTO `actualites` (`id`, `titre`, `description`, `image`, `cree_le`, `mod
 (14, '55555', 'dfh', 'C:/wamp64/www/projet/views/admin/uploads/beach_cleaning.jpg', '2025-01-09 09:47:23', '2025-01-09 09:47:23'),
 (12, 'Actualite TEST', 'je veux tester l\'inseertipon des actualites ', 'admin/uploads/blood_donation.jpg', '2025-01-09 09:43:10', '2025-01-09 09:44:18');
 
--- --------------------------------------------------------
 
---
--- Table structure for table `administrateurs`
---
 
 DROP TABLE IF EXISTS `administrateurs`;
 CREATE TABLE IF NOT EXISTS `administrateurs` (
@@ -42,18 +36,12 @@ CREATE TABLE IF NOT EXISTS `administrateurs` (
   UNIQUE KEY `nom_utilisateur` (`nom_utilisateur`)
 ) ;
 
---
--- Dumping data for table `administrateurs`
---
+
 
 INSERT INTO `administrateurs` (`id`, `nom_utilisateur`, `mot_de_passe`, `role`, `cree_le`, `modifie_le`) VALUES
 (1, 'admin_super', '$2y$10$example_hash', 'SuperAdmin', '2025-01-09 08:34:36', '2025-01-09 08:34:36');
 
--- --------------------------------------------------------
 
---
--- Table structure for table `avis_partenaires`
---
 
 DROP TABLE IF EXISTS `avis_partenaires`;
 CREATE TABLE IF NOT EXISTS `avis_partenaires` (
@@ -68,11 +56,7 @@ CREATE TABLE IF NOT EXISTS `avis_partenaires` (
   KEY `id_partenaire` (`id_partenaire`)
 ) ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `benevoles`
---
 
 DROP TABLE IF EXISTS `benevoles`;
 CREATE TABLE IF NOT EXISTS `benevoles` (
@@ -276,9 +260,6 @@ CREATE TABLE IF NOT EXISTS `parametres_application` (
   UNIQUE KEY `cle` (`cle`)
 ) ;
 
---
--- Dumping data for table `parametres_application`
---
 
 INSERT INTO `parametres_application` (`id`, `cle`, `valeur`, `description`, `modifie_le`) VALUES
 (1, 'logo_path', 'Images/logo_elmountada.png', 'Chemin vers le logo de l association', '2025-01-09 07:59:28'),
@@ -316,11 +297,7 @@ INSERT INTO `partenaires` (`id`, `nom`, `id_categorie_partenaire`, `ville`, `rem
 (8, 'Voyages Express', 4, 'Cheraga', 10.00, '-10% sur les forfaits de voyage', NULL, '2025-01-02 02:55:02', '2025-01-02 02:55:02'),
 (9, 'TOUBAL', 4, 'Medea Center', 20.00, 'hsfrthh', '', '2025-01-09 10:24:16', '2025-01-09 10:24:16');
 
--- --------------------------------------------------------
 
---
--- Table structure for table `remises`
---
 
 DROP TABLE IF EXISTS `remises`;
 CREATE TABLE IF NOT EXISTS `remises` (
@@ -339,9 +316,7 @@ CREATE TABLE IF NOT EXISTS `remises` (
   KEY `fk_categorie` (`id_categorie`)
 ) ;
 
---
--- Dumping data for table `remises`
---
+
 
 INSERT INTO `remises` (`id`, `id_partenaire`, `nom`, `description`, `type_remise`, `valeur_remise`, `expire_le`, `cree_le`, `modifie_le`, `id_categorie`) VALUES
 (1, 1, 'Remise Séjour Hôtel', '20% sur tous les séjours pour une durée limitée', 'permanente', '-20%', '2026-01-03', '2025-01-03 09:39:34', '2025-01-03 12:19:51', 1),
@@ -354,11 +329,6 @@ INSERT INTO `remises` (`id`, `id_partenaire`, `nom`, `description`, `type_remise
 (8, 8, 'Remise Forfait Voyage', '10% sur les forfaits de voyage', 'limitee', '-10%', '2025-07-03', '2025-01-03 09:39:34', '2025-01-03 12:19:51', 4),
 (9, 9, 'Offre Spéciale Commerce', '5% sur les achats de produits locaux', 'permanente', '-5%', '2026-01-03', '2025-01-03 09:39:34', '2025-01-03 12:19:51', 4);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `statut_benevolat`
---
 
 DROP TABLE IF EXISTS `statut_benevolat`;
 CREATE TABLE IF NOT EXISTS `statut_benevolat` (
@@ -368,20 +338,13 @@ CREATE TABLE IF NOT EXISTS `statut_benevolat` (
   UNIQUE KEY `nom` (`nom`)
 ) ;
 
---
--- Dumping data for table `statut_benevolat`
---
+
 
 INSERT INTO `statut_benevolat` (`id`, `nom`) VALUES
 (1, 'Inscrit'),
 (2, 'Confirmé'),
 (3, 'Terminé');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `type_abonnement`
---
 
 DROP TABLE IF EXISTS `type_abonnement`;
 CREATE TABLE IF NOT EXISTS `type_abonnement` (
@@ -391,9 +354,7 @@ CREATE TABLE IF NOT EXISTS `type_abonnement` (
   UNIQUE KEY `nom` (`nom`)
 ) ;
 
---
--- Dumping data for table `type_abonnement`
---
+
 
 INSERT INTO `type_abonnement` (`id`, `nom`) VALUES
 (1, 'Classique'),
@@ -402,11 +363,7 @@ INSERT INTO `type_abonnement` (`id`, `nom`) VALUES
 (4, 'Trimestriel'),
 (5, 'Annuel');
 
--- --------------------------------------------------------
 
---
--- Table structure for table `type_notification`
---
 
 DROP TABLE IF EXISTS `type_notification`;
 CREATE TABLE IF NOT EXISTS `type_notification` (
@@ -416,20 +373,13 @@ CREATE TABLE IF NOT EXISTS `type_notification` (
   UNIQUE KEY `nom` (`nom`)
 ) ;
 
---
--- Dumping data for table `type_notification`
---
 
 INSERT INTO `type_notification` (`id`, `nom`) VALUES
 (1, 'Événement'),
 (2, 'Promotion'),
 (3, 'Renouvellement');
 
--- --------------------------------------------------------
 
---
--- Table structure for table `utilisation_remises`
---
 
 DROP TABLE IF EXISTS `utilisation_remises`;
 CREATE TABLE IF NOT EXISTS `utilisation_remises` (

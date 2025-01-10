@@ -5,7 +5,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <div class="logo">
-        <a href="index.php"><img src="Images/logo_elmountada.png" alt="Logo"></a>
+        <a href="index.php"><img src="../Images/logo_elmountada.png" alt="Logo"></a>
     </div>
     <nav>
         <ul class="nav-links">
@@ -24,7 +24,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </div>
     <div class="profile-pic">
         <a href="monprofile.php">
-            <img src="Images/userPic.jpg" alt="Profile Picture">
+            <img src="../Images/userPic.jpg" alt="Profile Picture">
         </a>
     </div>
 </header>

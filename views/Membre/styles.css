@@ -351,6 +351,8 @@ body {
     object-fit: contain;
 }
 
+
+
 /* Footer Section */
 .footer-section {
     width: 100%;
@@ -1507,4 +1509,138 @@ form button:hover {
 .qr-code img {
     width: 100%;
     height: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*---------------------inscription------------------*/
+
+/* Member Registration Form Styles */
+.container_inscription {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.container_inscription h1, .container_inscription h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group_inscription {
+    margin-bottom: 15px;
+}
+
+.form-group_inscription label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group_inscription input[type="text"],
+.form-group_inscription input[type="email"],
+.form-group_inscription input[type="date"],
+.form-group_inscription input[type="password"],
+.form-group_inscription textarea,
+.form-group_inscription select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.radio-group_inscription {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+}
+
+.radio-group_inscription label {
+    font-weight: normal;
+}
+
+.file-input_inscription {
+    border: 1px dashed #ccc;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.file-input_inscription input[type="file"] {
+    display: none;
+}
+
+.file-label_inscription {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #e6e6e6;
+    cursor: pointer;
+}
+
+.file-label_inscription i {
+    margin-right: 5px;
+}
+
+.checkbox-group_inscription {
+    margin-bottom: 15px;
+}
+
+.checkbox-group_inscription label {
+    font-weight: normal;
+}
+
+.submit-btn_inscription {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn_inscription:hover {
+    background-color: #0056b3;
 }

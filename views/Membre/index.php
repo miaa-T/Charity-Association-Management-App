@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="hero-image">
-            <img src="Images/img1.png" alt="Teamwork">
+            <img src="../Images/img1.png" alt="Teamwork">
         </div>
     </section>
 
@@ -123,22 +123,22 @@
   <h2>Nos partenaires</h2>
   <div class="partners-grid">
       <div class="partner-logo">
-          <img src="Images/partner1.png" alt="ComgTime">
+          <img src="../Images/partner1.png" alt="ComgTime">
       </div>
       <div class="partner-logo">
-          <img src="Images/partner2.png" alt="Hotel">
+          <img src="../Images/partner2.png" alt="Hotel">
       </div>
       <div class="partner-logo">
-          <img src="Images/partner3.png" alt="Medical">
+          <img src="../Images/partner3.png" alt="Medical">
       </div>
       <div class="partner-logo">
-          <img src="Images/partner4.png" alt="Education">
+          <img src="../Images/partner4.png" alt="Education">
       </div>
       <div class="partner-logo">
-          <img src="Images/partner5.png" alt="Business">
+          <img src="../Images/partner5.png" alt="Business">
       </div>
       <div class="partner-logo">
-          <img src="Images/partner6.png" alt="Spontor">
+          <img src="../Images/partner6.png" alt="Spontor">
       </div>
   </div>
 </section>

@@ -106,7 +106,7 @@
             <div class="left-section">
                 <div class="logo">
                     <!-- Replace with your actual logo path -->
-                    <img src="Images/logo_elmountada.png"  alt="El Mountada">
+                    <img src="../Images/logo_elmountada.png"  alt="El Mountada">
                 </div>
                 
                 <div class="description">
@@ -135,7 +135,7 @@
             
             <div class="right-section">
                 <div class="profile-photo">
-                    <img src='Images/userPic.jpg' alt="Photo de profil">
+                    <img src='../Images/userPic.jpg' alt="Photo de profil">
                 </div>
                 <div class="qr-code">
                     <img src="generate_qr.php?id=MEM2025001" alt="QR Code">
