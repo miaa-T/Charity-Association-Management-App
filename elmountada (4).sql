@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jan 10, 2025 at 03:42 PM
+-- Generation Time: Jan 10, 2025 at 05:29 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -104,24 +104,27 @@ DROP TABLE IF EXISTS `benevoles`;
 CREATE TABLE IF NOT EXISTS `benevoles` (
   `id` int NOT NULL AUTO_INCREMENT,
   `id_membre` int NOT NULL,
-  `evenement` varchar(100) NOT NULL,
+  `evenement_id` int NOT NULL,
   `id_statut_benevolat` int NOT NULL,
   `cree_le` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `modifie_le` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `id_membre` (`id_membre`),
+  KEY `evenement_id` (`evenement_id`),
   KEY `id_statut_benevolat` (`id_statut_benevolat`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `benevoles`
 --
 
-INSERT INTO `benevoles` (`id`, `id_membre`, `evenement`, `id_statut_benevolat`, `cree_le`, `modifie_le`) VALUES
-(1, 1, 'Collecte de fonds', 1, '2025-01-09 09:42:53', '2025-01-09 09:42:53'),
-(2, 2, 'Distribution alimentaire', 2, '2025-01-09 09:42:53', '2025-01-09 09:42:53'),
-(3, 3, 'Sensibilisation', 1, '2025-01-09 09:42:53', '2025-01-09 09:42:53'),
-(4, 4, 'Nettoyage communautaire', 3, '2025-01-09 09:42:53', '2025-01-09 09:42:53');
+INSERT INTO `benevoles` (`id`, `id_membre`, `evenement_id`, `id_statut_benevolat`, `cree_le`, `modifie_le`) VALUES
+(1, 1, 1, 1, '2025-01-09 09:42:53', '2025-01-09 09:42:53'),
+(2, 2, 2, 2, '2025-01-09 09:42:53', '2025-01-09 09:42:53'),
+(3, 3, 3, 1, '2025-01-09 09:42:53', '2025-01-09 09:42:53'),
+(4, 4, 4, 3, '2025-01-09 09:42:53', '2025-01-09 09:42:53'),
+(5, 6, 2, 1, '2025-01-10 17:22:46', '2025-01-10 17:22:46'),
+(6, 5, 1, 1, '2025-01-10 17:23:44', '2025-01-10 17:23:44');
 
 -- --------------------------------------------------------
 
@@ -179,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `demandes_aides` (
 DROP TABLE IF EXISTS `dons`;
 CREATE TABLE IF NOT EXISTS `dons` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `id_membre` int NOT NULL,
+  `id_membre` int DEFAULT NULL,
   `montant` decimal(10,2) NOT NULL,
   `recu` text,
   `date_don` date NOT NULL,
@@ -188,7 +191,7 @@ CREATE TABLE IF NOT EXISTS `dons` (
   `statut` enum('En attente','Validé','Rejeté') DEFAULT 'En attente',
   PRIMARY KEY (`id`),
   KEY `id_membre` (`id_membre`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `dons`
@@ -198,7 +201,12 @@ INSERT INTO `dons` (`id`, `id_membre`, `montant`, `recu`, `date_don`, `cree_le`,
 (1, 1, 100.50, 'Reçu pour don mensuel', '2023-10-01', '2025-01-09 09:42:40', '2025-01-09 09:42:40', 'Validé'),
 (2, 2, 200.00, NULL, '2023-10-02', '2025-01-09 09:42:40', '2025-01-09 09:42:40', 'En attente'),
 (3, 3, 50.75, 'Reçu pour don ponctuel', '2023-10-03', '2025-01-09 09:42:40', '2025-01-09 09:42:40', 'Validé'),
-(4, 4, 300.00, NULL, '2023-10-04', '2025-01-09 09:42:40', '2025-01-09 09:42:40', 'Rejeté');
+(4, 4, 300.00, NULL, '2023-10-04', '2025-01-09 09:42:40', '2025-01-09 09:42:40', 'Rejeté'),
+(5, NULL, 1600.00, 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/67814b4dae3aa_blood_donation.jpg', '2025-01-10', '2025-01-10 16:31:09', '2025-01-10 16:31:09', 'En attente'),
+(6, 6, 5520.00, 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/67814c23209bb_image3.png', '2025-01-10', '2025-01-10 16:34:43', '2025-01-10 16:34:43', 'En attente'),
+(7, 6, 1600.00, 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/67814e0683fff_blood_donation.jpg', '2025-01-10', '2025-01-10 16:42:46', '2025-01-10 16:42:46', 'En attente'),
+(8, 6, 16005.00, 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/67814e6b399bb_beach_cleaning.jpg', '2025-01-10', '2025-01-10 16:44:27', '2025-01-10 16:44:27', 'En attente'),
+(9, NULL, 1600.00, 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/67814e86649d7_img1.png', '2025-01-10', '2025-01-10 16:44:54', '2025-01-10 16:44:54', 'En attente');
 
 -- --------------------------------------------------------
 
@@ -227,7 +235,7 @@ INSERT INTO `evenements` (`id`, `nom`, `description`, `image`, `date_debut`, `da
 (1, 'Nettoyage de Plage', 'Un événement communautaire pour nettoyer les plages de la région.', 'Images/beach_cleaning.jpg', '2024-01-10', '2024-01-12', '2025-01-02 02:36:06', '2025-01-02 02:36:06'),
 (2, 'Collecte de Sang', 'Une journée de collecte de sang pour aider les hôpitaux locaux.', 'Images/blood_donation.jpg', '2024-02-01', '2024-02-01', '2025-01-02 02:36:06', '2025-01-02 02:36:06'),
 (3, 'Marathon Caritatif', 'Un marathon pour collecter des fonds pour les enfants malades.', 'Images/marathon.jpg', '2024-03-15', '2024-03-15', '2025-01-02 02:36:06', '2025-01-02 02:36:06'),
-(4, 'Atelier de Formation', 'Atelier de formation pour les bénévoles sur la gestion des projets.', 'Images/training_workshop.jpg', '2024-04-10', '2024-04-11', '2025-01-02 02:36:06', '2025-01-02 02:36:06');
+(4, 'Atelier de Formationn', 'Atelier de formation pour les bénévoles sur la gestion des projets.', 'Images/training_workshop.jpg', '2024-04-10', '2024-04-11', '2025-01-02 02:36:06', '2025-01-10 17:02:04');
 
 -- --------------------------------------------------------
 
@@ -459,6 +467,35 @@ INSERT INTO `statut_benevolat` (`id`, `nom`) VALUES
 (1, 'Inscrit'),
 (2, 'Confirmé'),
 (3, 'Terminé');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `types_aide`
+--
+
+DROP TABLE IF EXISTS `types_aide`;
+CREATE TABLE IF NOT EXISTS `types_aide` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type_aide` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `documents_necessaires` text NOT NULL,
+  `cree_le` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `modifie_le` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `types_aide`
+--
+
+INSERT INTO `types_aide` (`id`, `type_aide`, `description`, `documents_necessaires`, `cree_le`, `modifie_le`) VALUES
+(1, 'Logement', 'Aide à l’hébergement temporaire et accompagnement dans la recherche de logement.', 'Pièce d’identité, justificatif de situation', '2025-01-10 16:02:26', '2025-01-10 16:02:26'),
+(2, 'Soins', 'Accès aux soins médicaux et aide à l’obtention de couverture santé.', 'Carte vitale, ordonnances médicales', '2025-01-10 16:02:26', '2025-01-10 16:02:26'),
+(3, 'Aide Alimentaire', 'Fournit des colis alimentaires ou des bons d’achat pour les familles et individus dans le besoin.', 'Pièce d’identité', '2025-01-10 16:02:26', '2025-01-10 16:02:26'),
+(4, 'Éducation', 'Soutien scolaire et aide à la formation professionnelle.', 'Certificat de scolarité, bulletins scolaires', '2025-01-10 16:02:26', '2025-01-10 16:02:26'),
+(5, 'Aide Vestimentaire', 'Distribue des vêtements et chaussures aux individus et familles, notamment durant l’hiver ou en période de crise.', 'Pièce d’identité', '2025-01-10 16:02:26', '2025-01-10 16:02:26'),
+(6, 'Aide Financière', 'Offre un soutien financier temporaire pour les situations urgentes ou les besoins essentiels.', 'Pièce d’identité, justificatif de situation financière, devis ou facture liée à la demande', '2025-01-10 16:02:26', '2025-01-10 16:02:26');
 
 -- --------------------------------------------------------
 
