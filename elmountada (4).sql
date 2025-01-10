@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jan 10, 2025 at 01:15 PM
+-- Generation Time: Jan 10, 2025 at 03:42 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `actualites` (
 --
 
 INSERT INTO `actualites` (`id`, `titre`, `description`, `image`, `cree_le`, `modifie_le`) VALUES
-(1, 'Une Histoire de Réussites', 'Comment notre communauté a transformé la vie de Rym...', '', '2025-01-02 02:35:25', '2025-01-09 08:46:21'),
+(1, 'Une Histoire de Réussite', 'Comment notre communauté a transformé la vie de Rym...', '', '2025-01-02 02:35:25', '2025-01-10 14:08:34'),
 (2, 'Impact Communautaires', 'Découvrez comment nos bénévoles ont créé un changement...', '', '2025-01-02 02:35:25', '2025-01-09 08:43:33'),
 (3, 'Projet Réussi', 'Le projet de rénovation du centre communautaire est terminé...', 'Images/image3.png', '2025-01-02 02:35:25', '2025-01-02 02:35:25'),
 (4, 'Une Histoire Inspirante', 'Rym, 8 ans, a pu bénéficier d\'une opération grâce à vos dons...', 'Images/image4.png', '2025-01-02 02:35:25', '2025-01-02 02:35:25'),
@@ -310,7 +310,7 @@ CREATE TABLE IF NOT EXISTS `membres` (
 --
 
 INSERT INTO `membres` (`id`, `prenom`, `nom`, `email`, `mot_de_passe`, `numero_identite`, `telephone`, `adresse`, `photo`, `recu_paiement`, `nom_type_abonnement`, `date_inscription`, `date_expiration`, `cree_le`, `modifie_le`, `statut`) VALUES
-(3, 'mahdia', 'toubal', 'mahdia.toubal@gmail.com', '$2y$10$SzGRrOryhpbDIFXbaFPlKu0LP6tc6mvgIJUfoIpx7kr3Ceeojrkxa', '0123', '0799518055', 'Batti medea center', 'C:\\wamp64\\www\\projet\\controllers/../uploads/photos/6780fe816bf77_blood_donation.jpg', 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/6780fe816c26f_blood_donation.jpg', 'Classique', '2025-01-10', '2026-01-10', '2025-01-10 10:03:29', '2025-01-10 10:03:29', 'En attente'),
+(3, 'mahdia', 'toubal', 'mahdia.toubal@gmail.com', '$2y$10$SzGRrOryhpbDIFXbaFPlKu0LP6tc6mvgIJUfoIpx7kr3Ceeojrkxa', '0123', '0799518055', 'Batti medea center', 'C:\\wamp64\\www\\projet\\controllers/../uploads/photos/6780fe816bf77_blood_donation.jpg', 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/6780fe816c26f_blood_donation.jpg', 'Classique', '2025-01-10', '2026-01-10', '2025-01-10 10:03:29', '2025-01-10 14:12:30', 'Approuvé'),
 (4, 'mahdiafghdy', 'toubalhdur', 'mahdia.touball@gmail.com', '$2y$10$ik4Hbmkj1Eu2AfknU4oiDugNH9fzf8XWNZ06CYrnkPZt8m0yo4Fxi', '0123456', '0799518055', 'Batti medea center', 'C:\\wamp64\\www\\projet\\controllers/../uploads/photos/678100139419d_image1.png', 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/678100139445f_image3.png', 'Premium', '2025-01-10', '2026-01-10', '2025-01-10 10:10:11', '2025-01-10 10:10:11', 'En attente'),
 (5, 'mahdianbhb', 'toubalnk', 'mahdjkhia.toubal@gmail.com', '$2y$10$uJCcv3rmpEFeuXt4redAR.4wnGs6bAOCmOxZwShDcnQ6aR0n555WG', '01470252', '0799518055', 'Batti medea center', 'C:\\wamp64\\www\\projet\\controllers/../uploads/photos/67811cfc1e586_beach_cleaning.jpg', 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/67811cfc1e80d_beach_cleaning.jpg', 'Classique', '2025-01-10', '2026-01-10', '2025-01-10 13:13:32', '2025-01-10 13:13:32', 'En attente'),
 (6, 'bjguj', 'nhjkhkj', 'test@gmail.com', '$2y$10$pltPEgyySesCAfqe/zbn5eKdXjg/qRHRQX.DhIa3gDMsvFnXXnth6', '265', '0541651', 'Batti medea center', 'C:\\wamp64\\www\\projet\\controllers/../uploads/photos/67811d5357736_blood_donation.jpg', 'C:\\wamp64\\www\\projet\\controllers/../uploads/receipts/67811d5357a86_beach_cleaning.jpg', 'Jeunes', '2025-01-10', '2026-01-10', '2025-01-10 13:14:59', '2025-01-10 13:14:59', 'En attente');
