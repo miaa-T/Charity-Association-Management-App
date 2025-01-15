@@ -1127,7 +1127,7 @@ form button:hover {
     cursor: pointer;
 }
 
-.renewal-submit-btn {
+.submit-btn {
     background: #007bff;
     color: #fff;
     padding: 10px 20px;
@@ -1967,4 +1967,112 @@ form button:hover {
 .connexion-btn:focus {
     background-color: #004080; /* Even darker blue */
     outline: none; /* Remove default focus outline */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* -------------notification--------------*/
+/* Styles pour la section des notifications */
+.notifications-section {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.notifications-section h2 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.notifications-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.notification-icon.blue {
+    background-color: #3498db;
+    color: white;
+}
+
+.notification-icon.yellow {
+    background-color: #f1c40f;
+    color: white;
+}
+
+.notification-icon.green {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #34495e;
+}
+
+.notification-time {
+    font-size: 0.8rem;
+    color: #888;
 }

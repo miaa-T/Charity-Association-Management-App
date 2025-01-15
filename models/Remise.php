@@ -79,4 +79,26 @@ class Remise {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getRemisesByTypeCarte($typeCarte) {
+        $query = "SELECT r.*, p.nom AS partenaire_nom 
+                  FROM remises r
+                  JOIN partenaires p ON r.id_partenaire = p.id
+                  JOIN remise_type_abonnement rta ON r.id = rta.id_remise
+                  WHERE rta.nom_type_abonnement = :typeCarte";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':typeCarte', $typeCarte);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function getRemisesUtilisees($idMembre) {
+    $query = "SELECT r.*, p.nom AS partenaire_nom 
+              FROM utilisation_remises ur
+              JOIN remises r ON ur.id_remise = r.id
+              JOIN partenaires p ON r.id_partenaire = p.id
+              WHERE ur.id_membre = :idMembre";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':idMembre', $idMembre);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }

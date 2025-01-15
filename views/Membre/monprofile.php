@@ -5,9 +5,12 @@ $isUserLoggedIn = isset($_SESSION['user_id']); // Check if the user is logged in
 
 // Include the necessary files
 require_once __DIR__ . '/../../controllers/MembresController.php';
+require_once __DIR__ . '/../../controllers/RemisesController.php';
+require_once __DIR__ . '/../../controllers/DonController.php';
 
 // Initialize the MembreController
 $membreController = new MembreController();
+$remisesController = new RemisesController();
 
 // Check if the user is logged in
 if ($isUserLoggedIn) {
@@ -18,6 +21,21 @@ if ($isUserLoggedIn) {
         // Handle the case where the member data is not found
         die("Member data not found.");
     }
+
+    require_once __DIR__ . '/../../controllers/DonController.php';
+    $donController = new DonController();
+    $dons = $donController->getUserDonations($userId);
+
+    require_once __DIR__ . '/../../controllers/NotificationController.php';
+    $notificationController = new NotificationController();
+    $notifications = $notificationController->getUserNotifications($userId);
+
+    // Récupérer les remises disponibles pour le type de carte de l'utilisateur
+    $typeCarte = $member['nom_type_abonnement'];
+    $remisesDisponibles = $remisesController->getRemisesByTypeCarte($typeCarte);
+
+    // Récupérer les remises utilisées par l'utilisateur
+    $remisesUtilisees = $remisesController->getRemisesUtilisees($userId);
 } else {
     // Redirect to login or handle the case where the user is not logged in
     header("Location: login.php");
@@ -101,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p><strong>Expiration:</strong> <?php echo htmlspecialchars($member['date_expiration']); ?></p>
                 </div>
                 <div class="profile-photo">
-                 <img src="<?php echo htmlspecialchars($member['photo'] ?? ''); ?>" alt="Profile Picture">
+                    <img src="<?php echo htmlspecialchars($member['photo'] ?? ''); ?>" alt="Profile Picture">
                 </div>
             </div>
             <button class="edit-info-btn" onclick="toggleEditForm()">Modifier mes informations</button>
@@ -130,8 +148,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
 
-       
-   
         <!-- Renewal Section -->
         <section class="renewal-section">
             <div class="renewal-alert">
@@ -162,16 +178,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><?php echo htmlspecialchars($member['nom_type_abonnement']); ?></td>
-                        <td>Jusqu'à 50%</td>
-                        <td>Hôtel AZ, Clinique Santé+</td>
-                    </tr>
+                    <?php foreach ($remisesDisponibles as $remise): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($typeCarte); ?></td>
+                            <td><?php echo htmlspecialchars($remise['valeur_remise']); ?></td>
+                            <td><?php echo htmlspecialchars($remise['partenaire_nom']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
             <div class="rewards-notification">
                 <p>Vous avez accumulé <strong>150 points de fidélité !</strong></p>
-                <button class="special-offers-btn">Voir les Offres Spéciales</button>
+                <button class="renewal-submit-btn"><a href="remises.php">Voir les Offres Spéciales</a></button>
             </div>
         </section>
 
@@ -184,35 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button class="tab-link" data-tab="paiements">Paiements</button>
                 <button class="tab-link" data-tab="remises">Remises</button>
             </div>
-            <div class="tab-content active" id="dons">
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Montant</th>
-                            <th>Campagne/Objet</th>
-                            <th>Référence</th>
-                            <th>Statut</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>15/12/2024</td>
-                            <td>35000 DA</td>
-                            <td>Un hiver au chaud</td>
-                            <td>REF123456</td>
-                            <td class="status validated">Confirmé</td>
-                        </tr>
-                        <tr>
-                            <td>01/10/2024</td>
-                            <td>10000 DA</td>
-                            <td>Don libre</td>
-                            <td>REF987654</td>
-                            <td class="status validated">Confirmé</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <?php include 'dons_histo.php'; ?>
             <!-- Other tab contents -->
         </div>
 
@@ -220,35 +210,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <section class="notifications-section">
             <h2>Notifications</h2>
             <ul class="notifications-list">
-                <li class="notification-item">
-                    <span class="notification-icon blue">
-                        <i class="fa fa-tag"></i>
-                    </span>
-                    <div class="notification-content">
-                        <p>Nouvelle remise disponible chez Hôtel Marriot</p>
-                        <span class="notification-time">Il y a 2 heures</span>
-                    </div>
-                </li>
-                <li class="notification-item">
-                    <span class="notification-icon yellow">
-                        <i class="fa fa-exclamation-circle"></i>
-                    </span>
-                    <div class="notification-content">
-                        <p>Rappel : Votre abonnement expire dans 15 jours</p>
-                        <span class="notification-time">Il y a 1 jour</span>
-                    </div>
-                </li>
-                <li class="notification-item">
-                    <span class="notification-icon green">
-                        <i class="fa fa-calendar-check-o"></i>
-                    </span>
-                    <div class="notification-content">
-                        <p>Invitation à l'événement de bénévolat "Nettoyage des Plages à Aïn Taya"</p>
-                        <span class="notification-time">Il y a 2 jours</span>
-                    </div>
-                </li>
+                <?php if ($isUserLoggedIn && !empty($notifications)): ?>
+                    <?php foreach ($notifications as $notification): ?>
+                        <li class="notification-item">
+                            <span class="notification-icon <?php echo htmlspecialchars(strtolower($notification['type_notification'])); ?>">
+                                <i class="fa <?php echo $notificationController->getNotificationIcon($notification['type_notification']); ?>"></i>
+                            </span>
+                            <div class="notification-content">
+                                <p><?php echo htmlspecialchars($notification['titre']); ?></p>
+                                <p><?php echo htmlspecialchars($notification['contenu']); ?></p>
+                                <span class="notification-time">
+                                    <?php echo $notificationController->formatNotificationTime($notification['envoye_le']); ?>
+                                </span>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <li class="notification-item">
+                        <p>Aucune notification pour le moment.</p>
+                    </li>
+                <?php endif; ?>
             </ul>
         </section>
+
         <script>
             function openTab(evt, tabName) {
                 const tabContents = document.querySelectorAll('.tab-content');
@@ -281,20 +265,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     });
                 });
             });
+
+            function toggleEditForm() {
+                const editForm = document.getElementById('edit-form');
+                if (editForm.style.display === 'none') {
+                    editForm.style.display = 'block';
+                } else {
+                    editForm.style.display = 'none';
+                }
+            }
         </script>
     </main>
 
     <!-- Footer -->
     <?php include 'footer.php'; ?>
-    <script>
-        function toggleEditForm() {
-            const editForm = document.getElementById('edit-form');
-            if (editForm.style.display === 'none') {
-                editForm.style.display = 'block';
-            } else {
-                editForm.style.display = 'none';
-            }
-        }
-    </script>
 </body>
 </html>

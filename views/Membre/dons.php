@@ -69,47 +69,8 @@ if ($isUserLoggedIn) {
 </section>
 
        <!-- Donation History -->
-<?php if ($isUserLoggedIn): ?>
-    <section class="donation-history-section">
-        <h2>Historique des Dons</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Montant</th>
-                    <th>Référence</th>
-                    <th>État</th>
-                    <th>Reçu</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($dons)): ?>
-                    <?php foreach ($dons as $don): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($don['date_don']); ?></td>
-                            <td><?php echo htmlspecialchars($don['montant']); ?> DA</td>
-                            <td><?php echo htmlspecialchars($don['id']); ?></td>
-                            <td>
-                                <span class="status <?php echo htmlspecialchars(strtolower($don['statut'])); ?>">
-                                    <?php echo htmlspecialchars($don['statut']); ?>
-                                </span>
-                            </td>
-                            <td>
-                                <a href="<?php echo htmlspecialchars($don['recu']); ?>" class="download-receipt" download>
-                                    <i class="fa fa-download"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="5">Aucun don enregistré pour le moment.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </section>
-<?php endif; ?>
+       <h2>Historique des Dons</h2>
+       <?php include 'dons_histo.php'; ?>
 <!-- Volunteer Section -->
 <?php if ($isUserLoggedIn): ?>
     <section class="volunteer-section">

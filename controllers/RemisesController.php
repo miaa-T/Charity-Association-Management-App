@@ -34,4 +34,10 @@ class RemisesController {
     public function getFilteredRemises($search = '', $category = '', $type = '') {
         return $this->remise->getFilteredRemises($search, $category, $type);
     }
+    public function getRemisesByTypeCarte($typeCarte) {
+        return $this->remise->getRemisesByTypeCarte($typeCarte);
+    }
+    public function getRemisesUtilisees($idMembre) {
+        return $this->remise->getRemisesUtilisees($idMembre);
+    }
 }

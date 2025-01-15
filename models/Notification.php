@@ -14,6 +14,31 @@ class Notification {
         $this->conn = $db;
     }
 
+    /**
+     * Récupère les notifications d'un membre spécifique.
+     *
+     * @param int $userId L'ID du membre.
+     * @return array Les notifications du membre.
+     */
+    public function getUserNotifications($userId) {
+        $query = "SELECT n.id, n.titre, n.contenu, n.envoye_le, tn.nom AS type_notification 
+FROM notifications n
+JOIN type_notification tn ON n.id_type_notification = tn.id
+WHERE n.id_membre = :id_membre
+ORDER BY n.envoye_le DESC;";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_membre', $userId);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Crée une nouvelle notification.
+     *
+     * @return bool True si la notification a été créée, sinon False.
+     */
     public function create() {
         $query = "INSERT INTO " . $this->table . " 
                   (id_membre, id_type_notification, titre, contenu) 
@@ -32,15 +57,11 @@ class Notification {
         return false;
     }
 
-    // Read all notifications
-    public function read() {
-        $query = "SELECT * FROM " . $this->table;
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt;
-    }
-
-    // Update a notification
+    /**
+     * Met à jour une notification existante.
+     *
+     * @return bool True si la notification a été mise à jour, sinon False.
+     */
     public function update() {
         $query = "UPDATE " . $this->table . " 
                   SET id_membre = :id_membre, id_type_notification = :id_type_notification, titre = :titre, contenu = :contenu
@@ -48,7 +69,6 @@ class Notification {
 
         $stmt = $this->conn->prepare($query);
 
-        // Bind values
         $stmt->bindParam(':id', $this->id);
         $stmt->bindParam(':id_membre', $this->id_membre);
         $stmt->bindParam(':id_type_notification', $this->id_type_notification);
@@ -61,12 +81,15 @@ class Notification {
         return false;
     }
 
-    // Delete a notification
+    /**
+     * Supprime une notification.
+     *
+     * @return bool True si la notification a été supprimée, sinon False.
+     */
     public function delete() {
         $query = "DELETE FROM " . $this->table . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);
 
-        // Bind ID
         $stmt->bindParam(':id', $this->id);
 
         if ($stmt->execute()) {
