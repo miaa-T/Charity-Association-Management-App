@@ -129,5 +129,23 @@ $this->membreModel->statut = 'En attente'; // Default status
     public function getMemberById($id) {
         return $this->membreModel->getMemberById($id);
     }
+    public function updateMember($id, $data) {
+        // Set member properties
+        $this->membreModel->id = $id;
+        $this->membreModel->prenom = $data['prenom'];
+        $this->membreModel->nom = $data['nom'];
+        $this->membreModel->email = $data['email'];
+        $this->membreModel->telephone = $data['telephone'];
+        $this->membreModel->photo = $data['photo'];
+
+        // Call the update method in the model
+        if ($this->membreModel->update()) {
+            return true;
+        } else {
+            // Print SQL errors for debugging
+            print_r($this->membreModel->getErrors());
+            return false;
+        }
+    }
 }
 ?>

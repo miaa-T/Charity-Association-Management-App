@@ -13,7 +13,7 @@ class Membre {
     public $adresse;
     public $photo;
     public $recu_paiement;
-    public $nom_type_abonnement; // Changed from id_type_abonnement to nom_type_abonnement
+    public $nom_type_abonnement; 
     public $date_inscription;
     public $date_expiration;
     public $cree_le;
@@ -80,7 +80,7 @@ class Membre {
      */
     public function update() {
         $query = "UPDATE " . $this->table . " 
-                  SET prenom = :prenom, nom = :nom, email = :email, mot_de_passe = :mot_de_passe, numero_identite = :numero_identite, telephone = :telephone, adresse = :adresse, photo = :photo, recu_paiement = :recu_paiement, nom_type_abonnement = :nom_type_abonnement, date_inscription = :date_inscription, date_expiration = :date_expiration, statut = :statut
+                  SET prenom = :prenom, nom = :nom, email = :email, telephone = :telephone, photo = :photo
                   WHERE id = :id";
 
         $stmt = $this->conn->prepare($query);
@@ -90,16 +90,8 @@ class Membre {
         $stmt->bindParam(':prenom', $this->prenom);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':email', $this->email);
-        $stmt->bindParam(':mot_de_passe', $this->mot_de_passe);
-        $stmt->bindParam(':numero_identite', $this->numero_identite);
         $stmt->bindParam(':telephone', $this->telephone);
-        $stmt->bindParam(':adresse', $this->adresse);
         $stmt->bindParam(':photo', $this->photo);
-        $stmt->bindParam(':recu_paiement', $this->recu_paiement);
-        $stmt->bindParam(':nom_type_abonnement', $this->nom_type_abonnement);
-        $stmt->bindParam(':date_inscription', $this->date_inscription);
-        $stmt->bindParam(':date_expiration', $this->date_expiration);
-        $stmt->bindParam(':statut', $this->statut);
 
         // Execute the query
         if ($stmt->execute()) {
@@ -235,6 +227,9 @@ class Membre {
         $stmt->execute();
     
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function getErrors() {
+        return $this->conn->errorInfo();
     }
 }
 ?>
