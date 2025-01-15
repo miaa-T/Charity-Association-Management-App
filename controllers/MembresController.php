@@ -126,5 +126,8 @@ $this->membreModel->statut = 'En attente'; // Default status
         }
         return false;
     }
+    public function getMemberById($id) {
+        return $this->membreModel->getMemberById($id);
+    }
 }
 ?>

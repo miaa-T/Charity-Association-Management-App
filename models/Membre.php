@@ -228,5 +228,13 @@ class Membre {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ? $result['nom'] : null;
     }
+    public function getMemberById($id) {
+        $query = "SELECT * FROM " . $this->table . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+    
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
 ?>

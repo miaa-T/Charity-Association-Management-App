@@ -141,6 +141,7 @@ if ($isUserLoggedIn) {
     </section>
 <?php endif; ?>
    <!-- Request Assistance Section -->
+<!-- Request Assistance Section -->
 <section class="assistance-request-section">
     <h2>Demande d'Aide</h2>
     <p class="remarque">Remarque : Veuillez combiner tous vos documents dans un seul fichier PDF à soumettre.</p>
@@ -164,11 +165,14 @@ if ($isUserLoggedIn) {
         <label for="needs-description">Description des besoins</label>
         <textarea id="needs-description" name="description" rows="4" placeholder="Décrivez les besoins" required></textarea>
 
-        <label for="assistance-document">Documents justificatifs</label>
-        <input type="file" id="assistance-document" name="fichier" required>
-
         <label for="numero-identite">Numéro d'identité</label>
         <input type="text" id="numero-identite" name="numero_identite" placeholder="Numéro d'identité" required>
+
+        <label for="numero-telephone">Numéro de téléphone</label> 
+        <input type="text" id="numero-telephone" name="numero_telephone" placeholder="Numéro de téléphone" required>
+
+        <label for="assistance-document">Documents justificatifs</label>
+        <input type="file" id="assistance-document" name="fichier" required>
 
         <button type="submit" class="assistance-submit-btn">Soumettre la Demande</button>
     </form>

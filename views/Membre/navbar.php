@@ -27,12 +27,12 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
             <img src="<?= $_SESSION['photo'] ?>" alt="Profile Picture" id="profile-pic">
             <div class="profile-popup" id="profile-popup">
                 <a href="monprofile.php">Mon profil</a>
-                <a href="carteMembre.php">Ma carte membre</a>
+                <a href="carteMembre.php">Ma carte membre</a> 
                 <a href="logout.php">Déconnexion</a>
             </div>
         </div>
     <?php else: ?>
-        <a href="login.php" class="connexion-btn">Connexion</a> <!-- Add a class here -->
+        <a href="login.php" class="connexion-btn">Connexion</a>
     <?php endif; ?>
 </div>
 </header>

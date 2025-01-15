@@ -30,13 +30,22 @@ class AideController {
             $type_aide = $_POST['type_aide'];
             $description = $_POST['description'];
             $numero_identite = $_POST['numero_identite'];
-
+            $numero_telephone = $_POST['numero_telephone'];
+    
             // Handle file upload
             $fichier = null;
             if (isset($_FILES['fichier']) && $_FILES['fichier']['error'] === UPLOAD_ERR_OK) {
-                $fichier = file_get_contents($_FILES['fichier']['tmp_name']);
+                $uploadDir = __DIR__ . '/../../uploads/'; // Directory to save files
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true); // Create the directory if it doesn't exist
+                }
+                $fileName = basename($_FILES['fichier']['name']);
+                $filePath = $uploadDir . $fileName;
+                if (move_uploaded_file($_FILES['fichier']['tmp_name'], $filePath)) {
+                    $fichier = $filePath; // Store the file path
+                }
             }
-
+    
             // Set the properties in the DemandeAide model
             $this->demandeAide->nom = $nom;
             $this->demandeAide->prenom = $prenom;
@@ -45,7 +54,8 @@ class AideController {
             $this->demandeAide->description = $description;
             $this->demandeAide->fichier = $fichier;
             $this->demandeAide->numero_identite = $numero_identite;
-
+            $this->demandeAide->numero_telephone = $numero_telephone;
+    
             // Create the assistance request
             if ($this->demandeAide->creer()) {
                 echo json_encode(['success' => true, 'message' => 'Demande d\'aide soumise avec succès!']);

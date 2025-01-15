@@ -80,7 +80,7 @@ class Partenaire {
         $stmt->bindParam(':remise', $this->remise);
         $stmt->bindParam(':details', $this->details);
         $stmt->bindParam(':logo', $this->logo);
-        $stmt->bindParam(':description', $this->description); // Bind the new field
+        $stmt->bindParam(':description', $this->description); 
 
         if ($stmt->execute()) {
             return true;

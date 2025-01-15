@@ -1,6 +1,20 @@
 <?php
-session_start(); // Start the session
-$current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
+session_start(); // Démarrer la session
+
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php"); // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+    exit();
+}
+
+// Inclure le contrôleur Membre
+require_once __DIR__ . '/../../controllers/MembresController.php';
+$membreController = new MembreController();
+$membre = $membreController->getMemberById($_SESSION['user_id']); // Récupérer les informations du membre connecté
+
+if (!$membre) {
+    die("Erreur : Impossible de charger les informations du membre.");
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -10,11 +24,8 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
     <title>El Mountada - Carte Membre</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
     <style>
-       
-
-        
+        /* Vos styles CSS existants */
         .card-container {
             width: 800px;
             padding: 40px;
@@ -40,10 +51,6 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
             flex-direction: column;
             gap: 20px;
         }
-
-       
-
-       
 
         .description {
             font-size: 1em;
@@ -83,10 +90,6 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
             align-items: center;
         }
 
-       
-
-       
-
         .qr-code {
             width: 150px;
             height: 150px;
@@ -103,51 +106,40 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
     </style>
 </head>
 <body>
-
-
     <div class="card-container">
         <div class="card">
             <div class="left-section">
                 <div class="logo">
-                    <!-- Replace with your actual logo path -->
-                    <img src="../Images/logo_elmountada.png"  alt="El Mountada">
+                    <img src="../Images/logo_elmountada.png" alt="El Mountada">
                 </div>
-                
                 <div class="description">
                     Nous sommes une organisation caritative dédiée à apporter du soutien aux communautés locales et à créer un impact durable.
                 </div>
-
                 <div class="member-info">
                     <div class="info-item">
                         <div class="label">ID Membre</div>
-                        <div class="value">MEM2025001</div>
+                        <div class="value"><?php echo htmlspecialchars($membre['id']); ?></div>
                     </div>
                     <div class="info-item">
                         <div class="label">Nom Complet</div>
-                        <div class="value">HADDAD Amina</div>
+                        <div class="value"><?php echo htmlspecialchars($membre['prenom'] . ' ' . $membre['nom']); ?></div>
                     </div>
                     <div class="info-item">
                         <div class="label">Type de Carte</div>
-                        <div class="value">Premium</div>
+                        <div class="value"><?php echo htmlspecialchars($membre['nom_type_abonnement']); ?></div>
                     </div>
                     <div class="info-item">
                         <div class="label">Date d'Expiration</div>
-                        <div class="value">31/12/2025</div>
+                        <div class="value"><?php echo htmlspecialchars($membre['date_expiration']); ?></div>
                     </div>
                 </div>
             </div>
-            
             <div class="right-section">
-                <div class="profile-photo">
-                    <img src='../Images/userPic.jpg' alt="Photo de profil">
-                </div>
                 <div class="qr-code">
-                    <img src="generate_qr.php?id=MEM2025001" alt="QR Code">
+                    <img src="../../generate_qr.php?id=<?php echo htmlspecialchars($membre['id']); ?>" alt="QR Code">
                 </div>
             </div>
         </div>
     </div>
- 
-
 </body>
 </html>

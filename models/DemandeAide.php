@@ -11,6 +11,7 @@ class DemandeAide {
     public $description;
     public $fichier;
     public $numero_identite;
+    public $numero_telephone;
     public $cree_le;
     public $modifie_le;
 
@@ -21,8 +22,8 @@ class DemandeAide {
     // Create a new assistance request
     public function creer() {
         $query = 'INSERT INTO ' . $this->table . ' 
-                  (nom, prenom, date_naissance, type_aide, description, fichier, numero_identite) 
-                  VALUES (:nom, :prenom, :date_naissance, :type_aide, :description, :fichier, :numero_identite)';
+                  (nom, prenom, date_naissance, type_aide, description, fichier, numero_identite, numero_telephone) 
+                  VALUES (:nom, :prenom, :date_naissance, :type_aide, :description, :fichier, :numero_identite, :numero_telephone)';
 
         $stmt = $this->conn->prepare($query);
 
@@ -34,6 +35,7 @@ class DemandeAide {
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':fichier', $this->fichier);
         $stmt->bindParam(':numero_identite', $this->numero_identite);
+        $stmt->bindParam(':numero_telephone', $this->numero_telephone); 
 
         // Execute the query
         if ($stmt->execute()) {
@@ -54,7 +56,8 @@ class DemandeAide {
     public function modifier() {
         $query = 'UPDATE ' . $this->table . ' 
                   SET nom = :nom, prenom = :prenom, date_naissance = :date_naissance, type_aide = :type_aide, 
-                      description = :description, fichier = :fichier, numero_identite = :numero_identite 
+                      description = :description, fichier = :fichier, numero_identite = :numero_identite, 
+                      numero_telephone = :numero_telephone 
                   WHERE id = :id';
 
         $stmt = $this->conn->prepare($query);
@@ -68,6 +71,7 @@ class DemandeAide {
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':fichier', $this->fichier);
         $stmt->bindParam(':numero_identite', $this->numero_identite);
+        $stmt->bindParam(':numero_telephone', $this->numero_telephone); // Add this line
 
         // Execute the query
         if ($stmt->execute()) {
@@ -75,6 +79,7 @@ class DemandeAide {
         }
         return false;
     }
+
 
     // Delete an assistance request
     public function supprimer() {
