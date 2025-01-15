@@ -1,58 +1,58 @@
 <?php
-require_once 'config.php';
-require_once __DIR__ . '/../../models/Partenaire.php';
+require_once __DIR__ . '/../../controllers/PartenairesController.php';
+require_once __DIR__ . '/../../controllers/RemisesController.php'; 
 
-$database = new Database();
-$db = $database->connect();
+// Instancier le contrôleur
+$controller = new PartenaireController();
+$remisesController = new RemisesController();
 
+// Gestion des messages d'erreur et de succès
 $error = '';
 $success = '';
-
-// Instancier le modèle Partenaire
-$partenaireModel = new Partenaire($db);
-
-// Récupérer les villes et catégories pour les filtres
-$villes = $db->query("SELECT DISTINCT ville FROM partenaires ORDER BY ville")->fetchAll(PDO::FETCH_COLUMN);
-$categories = $db->query("SELECT id, nom FROM categorie_partenaire ORDER BY nom")->fetchAll(PDO::FETCH_ASSOC);
 
 // Gestion des actions (ajout, modification, suppression)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
             case 'add':
-                $partenaireModel->nom = $_POST['nom'];
-                $partenaireModel->id_categorie_partenaire = $_POST['categorie'];
-                $partenaireModel->ville = $_POST['ville'];
-                $partenaireModel->remise = $_POST['remise'];
-                $partenaireModel->details = $_POST['details'];
-                $partenaireModel->logo = ''; // Gérer l'upload du logo si nécessaire
+                $data = [
+                    'nom' => $_POST['nom'],
+                    'id_categorie_partenaire' => $_POST['categorie'],
+                    'ville' => $_POST['ville'],
+                    'remise' => $_POST['remise'],
+                    'details' => $_POST['details'],
+                    'logo' => '', // Gérer l'upload du logo si nécessaire
+                    'description' => $_POST['description'] ?? '' // Ajout du champ description
+                ];
 
-                if ($partenaireModel->create()) {
+                if ($controller->addPartner($data)) {
                     $success = "Partenaire ajouté avec succès!";
                 } else {
                     $error = "Erreur lors de l'ajout du partenaire.";
                 }
                 break;
 
-            case 'edit':
-                $partenaireModel->id = $_POST['id'];
-                $partenaireModel->nom = $_POST['nom'];
-                $partenaireModel->id_categorie_partenaire = $_POST['categorie'];
-                $partenaireModel->ville = $_POST['ville'];
-                $partenaireModel->remise = $_POST['remise'];
-                $partenaireModel->details = $_POST['details'];
-                $partenaireModel->logo = ''; // Gérer l'upload du logo si nécessaire
-
-                if ($partenaireModel->update()) {
-                    $success = "Partenaire mis à jour avec succès!";
-                } else {
-                    $error = "Erreur lors de la mise à jour du partenaire.";
-                }
-                break;
+                case 'edit':
+                    $data = [
+                        'id' => $_POST['id'],
+                        'nom' => $_POST['nom'],
+                        'id_categorie_partenaire' => $_POST['categorie'],
+                        'ville' => $_POST['ville'],
+                        'remise' => $_POST['remise'],
+                        'details' => $_POST['details'],
+                        'logo' => '', // Gérer l'upload du logo si nécessaire
+                        'description' => $_POST['description'] ?? '' // Ajout du champ description
+                    ];
+                
+                    if ($controller->updatePartner($_POST['id'], $data)) {
+                        $success = "Partenaire mis à jour avec succès!";
+                    } else {
+                        $error = "Erreur lors de la mise à jour du partenaire.";
+                    }
+                    break;
 
             case 'delete':
-                $partenaireModel->id = $_POST['id'];
-                if ($partenaireModel->delete()) {
+                if ($controller->deletePartner($_POST['id'])) {
                     $success = "Partenaire supprimé avec succès!";
                 } else {
                     $error = "Erreur lors de la suppression du partenaire.";
@@ -61,36 +61,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+// Vérifier si c'est une requête AJAX pour les statistiques
+if (isset($_GET['action']) && $_GET['action'] === 'get_statistiques' && isset($_GET['id_partenaire'])) {
+    $remisesController = new RemisesController();
+    $id_partenaire = $_GET['id_partenaire'];
 
-// Récupérer les partenaires avec filtres
+    // Récupérer les remises et les utilisations
+    $remises = $remisesController->getRemisesByPartenaire($id_partenaire);
+    $utilisations = $remisesController->getUtilisationsByPartenaire($id_partenaire);
+
+    // Renvoyer les données au format JSON
+    header('Content-Type: application/json');
+    echo json_encode([
+        'remises' => $remises,
+        'utilisations' => $utilisations
+    ]);
+    exit; // Arrêter l'exécution du script après avoir renvoyé les données
+}
+// Récupérer les filtres
 $ville_filter = $_GET['ville'] ?? '';
 $categorie_filter = $_GET['categorie'] ?? '';
 
-$query = "SELECT p.*, cp.nom as categorie_nom 
-          FROM partenaires p 
-          LEFT JOIN categorie_partenaire cp ON p.id_categorie_partenaire = cp.id 
-          WHERE 1=1";
+// Récupérer les partenaires avec filtres
+$partenaires = $controller->getAllPartners($ville_filter, $categorie_filter);
 
-if (!empty($ville_filter)) {
-    $query .= " AND p.ville = :ville";
-}
-if (!empty($categorie_filter)) {
-    $query .= " AND p.id_categorie_partenaire = :categorie";
-}
-
-$query .= " ORDER BY p.nom";
-
-$stmt = $db->prepare($query);
-
-if (!empty($ville_filter)) {
-    $stmt->bindParam(':ville', $ville_filter);
-}
-if (!empty($categorie_filter)) {
-    $stmt->bindParam(':categorie', $categorie_filter);
-}
-
-$stmt->execute();
-$partenaires = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Récupérer les villes et catégories pour les filtres
+$villes = $controller->getAllCities();
+$categories = $controller->getAllCategories();
 ?>
 
 <?php require_once 'header.php'; ?>
@@ -157,16 +154,22 @@ $partenaires = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><?php echo htmlspecialchars($partenaire['ville']); ?></td>
                                 <td><?php echo $partenaire['remise'] . '%'; ?></td>
                                 <td>
-                                    <button class="btn btn-sm btn-info" onclick="viewStats(<?php echo $partenaire['id']; ?>)">
-                                        <i class="fas fa-chart-bar"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-primary" onclick="editPartenaire(<?php echo $partenaire['id']; ?>)">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deletePartenaire(<?php echo $partenaire['id']; ?>)">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
+    <!-- Bouton pour afficher les statistiques -->
+    <button class="btn btn-sm btn-info" onclick="viewStats(<?php echo $partenaire['id']; ?>)">
+        <i class="fas fa-chart-bar"></i> Statistiques
+    </button>
+
+    <!-- Bouton pour éditer -->
+    <button class="btn btn-sm btn-primary" onclick="editPartenaire(<?php echo $partenaire['id']; ?>)">
+        <i class="fas fa-edit"></i> Éditer
+    </button>
+
+    <!-- Bouton pour supprimer -->
+    <button class="btn btn-sm btn-danger" onclick="deletePartenaire(<?php echo $partenaire['id']; ?>)">
+        <i class="fas fa-trash"></i> Supprimer
+    </button>
+</td>
+
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -213,6 +216,10 @@ $partenaires = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <label class="form-label">Détails</label>
                         <textarea name="details" class="form-control"></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control"></textarea>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -222,16 +229,123 @@ $partenaires = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
-
+<!-- Modal de modification -->
+<div class="modal fade" id="editPartenaireModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier un partenaire</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editPartenaireForm" method="POST">
+                    <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="id" id="editPartenaireId">
+                    <div class="mb-3">
+                        <label class="form-label">Nom</label>
+                        <input type="text" name="nom" id="editNom" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Catégorie</label>
+                        <select name="categorie" id="editCategorie" class="form-select" required>
+                            <?php foreach ($categories as $categorie): ?>
+                                <option value="<?php echo $categorie['id']; ?>">
+                                    <?php echo htmlspecialchars($categorie['nom']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ville</label>
+                        <input type="text" name="ville" id="editVille" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Remise (%)</label>
+                        <input type="number" name="remise" id="editRemise" class="form-control" min="0" max="100" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Détails</label>
+                        <textarea name="details" id="editDetails" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" id="editDescription" class="form-control"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="submit" form="editPartenaireForm" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 function viewStats(id) {
-    // Afficher les statistiques du partenaire
-    alert("Statistiques du partenaire ID: " + id);
-}
+    fetch(`gestion_partenaires.php?action=get_statistiques&id_partenaire=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            // Construire le contenu du popup
+            let content = '<h5>Statistiques des offres</h5>';
 
+            // Afficher les remises
+            content += '<h6>Remises</h6>';
+            content += '<ul>';
+            data.remises.forEach(remise => {
+                content += `<li>${remise.nom} (${remise.valeur_remise}%) - Expire le ${remise.expire_le}</li>`;
+            });
+            content += '</ul>';
+
+            // Afficher les utilisations
+            content += '<h6>Membres ayant bénéficié des offres</h6>';
+            content += '<ul>';
+            data.utilisations.forEach(utilisation => {
+                content += `<li>${utilisation.membre_nom} - Montant avant remise: ${utilisation.montant_avant_remise}, Montant remisé: ${utilisation.montant_remise}</li>`;
+            });
+            content += '</ul>';
+
+            // Afficher le popup
+            const popup = window.open('', 'Statistiques', 'width=600,height=400');
+            popup.document.write(`
+                <html>
+                    <head>
+                        <title>Statistiques</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 20px; }
+                            h5, h6 { color: #333; }
+                            ul { list-style-type: none; padding: 0; }
+                            li { margin-bottom: 10px; }
+                        </style>
+                    </head>
+                    <body>
+                        ${content}
+                        <button onclick="window.close()">Fermer</button>
+                    </body>
+                </html>
+            `);
+            popup.document.close();
+        })
+        .catch(error => console.error('Erreur lors de la récupération des statistiques:', error));
+}
 function editPartenaire(id) {
-    // Ouvrir le modal d'édition avec les données du partenaire
-    alert("Éditer le partenaire ID: " + id);
+    // Récupérer les données du partenaire via AJAX
+    fetch(`get_partenaire.php?id=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            // Remplir les champs du modal avec les données du partenaire
+            document.getElementById('editPartenaireId').value = data.id;
+            document.getElementById('editNom').value = data.nom;
+            document.getElementById('editCategorie').value = data.id_categorie_partenaire;
+            document.getElementById('editVille').value = data.ville;
+            document.getElementById('editRemise').value = data.remise;
+            document.getElementById('editDetails').value = data.details;
+            document.getElementById('editDescription').value = data.description;
+
+            // Ouvrir le modal de modification
+            const editModal = new bootstrap.Modal(document.getElementById('editPartenaireModal'));
+            editModal.show();
+        })
+        .catch(error => console.error('Erreur lors de la récupération des données du partenaire:', error));
 }
 
 function deletePartenaire(id) {

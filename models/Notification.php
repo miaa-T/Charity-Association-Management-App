@@ -56,7 +56,6 @@ ORDER BY n.envoye_le DESC;";
         }
         return false;
     }
-
     /**
      * Met à jour une notification existante.
      *
@@ -80,7 +79,6 @@ ORDER BY n.envoye_le DESC;";
         }
         return false;
     }
-
     /**
      * Supprime une notification.
      *
@@ -96,6 +94,17 @@ ORDER BY n.envoye_le DESC;";
             return true;
         }
         return false;
+    }
+    public function getAllNotifications() {
+        $query = "SELECT n.id, n.id_membre, n.id_type_notification, n.titre, n.contenu, n.envoye_le, tn.nom AS type_notification 
+                  FROM notifications n
+                  JOIN type_notification tn ON n.id_type_notification = tn.id
+                  ORDER BY n.envoye_le DESC";
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>

@@ -20,6 +20,9 @@ class NotificationController {
     public function getUserNotifications($userId) {
         return $this->notificationModel->getUserNotifications($userId);
     }
+    public function getAllNotifications() {
+        return $this->notificationModel->getAllNotifications();
+    }
 
     /**
      * Retourne l'icône FontAwesome en fonction du type de notification.
@@ -39,7 +42,6 @@ class NotificationController {
                 return 'fa-bell';
         }
     }
-
     /**
      * Formate la date de la notification pour afficher "Il y a X temps".
      *
@@ -64,6 +66,35 @@ class NotificationController {
         } else {
             return "À l'instant";
         }
+    }
+    public function createNotification($id_membre, $id_type_notification, $titre, $contenu) {
+        $this->notificationModel->id_membre = $id_membre;
+        $this->notificationModel->id_type_notification = $id_type_notification;
+        $this->notificationModel->titre = $titre;
+        $this->notificationModel->contenu = $contenu;
+
+        return $this->notificationModel->create();
+    }
+    public function editNotification($id, $id_membre, $id_type_notification, $titre, $contenu) {
+        $this->notificationModel->id = $id;
+        $this->notificationModel->id_membre = $id_membre;
+        $this->notificationModel->id_type_notification = $id_type_notification;
+        $this->notificationModel->titre = $titre;
+        $this->notificationModel->contenu = $contenu;
+
+        return $this->notificationModel->update();
+    }
+
+    /**
+     * Supprime une notification.
+     *
+     * @param int $id L'ID de la notification.
+     * @return bool True si la notification a été supprimée, sinon False.
+     */
+   
+     public function deleteNotification($id) {
+        $this->notificationModel->id = $id;
+        return $this->notificationModel->delete();
     }
 }
 ?>

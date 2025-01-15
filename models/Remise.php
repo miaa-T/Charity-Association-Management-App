@@ -101,4 +101,25 @@ class Remise {
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+public function getRemisesByPartenaire($id_partenaire) {
+    $query = "SELECT * FROM remises WHERE id_partenaire = :id_partenaire";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id_partenaire', $id_partenaire);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * Récupérer les utilisations des remises d'un partenaire
+ */
+public function getUtilisationsByPartenaire($id_partenaire) {
+    $query = "SELECT ur.*, m.nom as membre_nom 
+              FROM utilisation_remises ur
+              JOIN membres m ON ur.id_membre = m.id
+              WHERE ur.id_partenaire = :id_partenaire";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id_partenaire', $id_partenaire);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }

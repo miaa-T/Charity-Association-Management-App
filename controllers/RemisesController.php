@@ -40,4 +40,14 @@ class RemisesController {
     public function getRemisesUtilisees($idMembre) {
         return $this->remise->getRemisesUtilisees($idMembre);
     }
+    public function getRemisesByPartenaire($id_partenaire) {
+        return $this->remise->getRemisesByPartenaire($id_partenaire);
+    }
+
+    /**
+     * Récupérer les utilisations des remises d'un partenaire
+     */
+    public function getUtilisationsByPartenaire($id_partenaire) {
+        return $this->remise->getUtilisationsByPartenaire($id_partenaire);
+    }
 }
