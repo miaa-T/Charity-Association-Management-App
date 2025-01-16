@@ -38,4 +38,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $benevoleController = new BenevoleController();
     $benevoleController->createBenevole();
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'])) {
+        $id = $_POST['id'];
+
+        switch ($_POST['action']) {
+            // ... autres cas existants ...
+
+            case 'approve_benevolat':
+                if ($benevolatModel->approve($id)) {
+                    $success = "Bénévolat approuvé avec succès!";
+                } else {
+                    $error = "Erreur lors de l'approbation du bénévolat.";
+                }
+                break;
+
+            case 'complete_benevolat':
+                if ($benevolatModel->complete($id)) {
+                    $success = "Bénévolat marqué comme terminé avec succès!";
+                } else {
+                    $error = "Erreur lors de la mise à jour du statut du bénévolat.";
+                }
+                break;
+        }
+    }
+}
 ?>

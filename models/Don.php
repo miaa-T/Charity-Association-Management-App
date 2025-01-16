@@ -70,11 +70,11 @@ class Don {
     }
 
     // Supprimer un don
-    public function delete() {
+    public function delete($id) {
         $query = "DELETE FROM " . $this->table . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $this->id);
-
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    
         if ($stmt->execute()) {
             return true;
         }

@@ -1,7 +1,9 @@
 <?php
+session_start();
 require_once 'config.php';
 require_once __DIR__ . '/../../models/Don.php';
 require_once __DIR__ . '/../../models/Benevolat.php';
+require_once __DIR__ . '/../../models/HistoriqueAdmin.php';
 
 $database = new Database();
 $db = $database->connect();
@@ -12,7 +14,7 @@ $success = '';
 // Instancier les modèles
 $donModel = new Don($db);
 $benevolatModel = new Benevolat($db);
-
+$historiqueAdminModel = new HistoriqueAdmin($db); 
 // Gestion des actions (validation, rejet, suppression)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
@@ -21,6 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         switch ($_POST['action']) {
             case 'validate_don':
                 if ($donModel->validate($id)) {
+                    // Enregistrer l'action dans l'historique
+                    $historiqueAdminModel->id_administrateur = $_SESSION['admin_id'];
+                    $historiqueAdminModel->type_action = 'Validation'; // Nouveau type d'action
+                    $historiqueAdminModel->table_concernee = 'dons';
+                    $historiqueAdminModel->id_enregistrement = $id;
+                    $historiqueAdminModel->details = "Validation du don ID $id";
+                    $historiqueAdminModel->create();
+
                     $success = "Don validé avec succès!";
                 } else {
                     $error = "Erreur lors de la validation du don.";
@@ -29,30 +39,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             case 'reject_don':
                 if ($donModel->reject($id)) {
+                    $historiqueAdminModel->id_administrateur = $_SESSION['admin_id'];
+                    $historiqueAdminModel->type_action = 'Rejection'; // Nouveau type d'action
+                    $historiqueAdminModel->table_concernee = 'dons';
+                    $historiqueAdminModel->id_enregistrement = $id;
+                    $historiqueAdminModel->details = "Rejection du don ID $id";
+                    $historiqueAdminModel->create();
                     $success = "Don rejeté avec succès!";
                 } else {
                     $error = "Erreur lors du rejet du don.";
                 }
                 break;
 
-            case 'delete_don':
-                if ($donModel->delete($id)) {
-                    $success = "Don supprimé avec succès!";
-                } else {
-                    $error = "Erreur lors de la suppression du don.";
-                }
-                break;
+                case 'delete_don':
+                    if ($donModel->delete($id)) {
+                        $historiqueAdminModel->id_administrateur = $_SESSION['admin_id'];
+                        $historiqueAdminModel->type_action = 'Suppression'; // Nouveau type d'action
+                        $historiqueAdminModel->table_concernee = 'dons';
+                        $historiqueAdminModel->id_enregistrement = $id;
+                        $historiqueAdminModel->details = "Suppression du don ID $id";
+                        $historiqueAdminModel->create();
+                        $success = "Don supprimé avec succès!";
+                    } else {
+                        $error = "Erreur lors de la suppression du don.";
+                    }
+                    break;
 
             case 'delete_benevolat':
                 if ($benevolatModel->delete($id)) {
+                    $historiqueAdminModel->id_administrateur = $_SESSION['admin_id'];
+                    $historiqueAdminModel->type_action = 'Suppression'; // Nouveau type d'action
+                    $historiqueAdminModel->table_concernee = 'Benevoles';
+                    $historiqueAdminModel->id_enregistrement = $id;
+                    $historiqueAdminModel->details = "Suppression du benevole ID $id";
+                    $historiqueAdminModel->create();
                     $success = "Bénévolat supprimé avec succès!";
                 } else {
                     $error = "Erreur lors de la suppression du bénévolat.";
                 }
                 break;
+                case 'approve_benevolat':
+                    if ($benevolatModel->approve($id)) {
+                     $historiqueAdminModel->id_administrateur = $_SESSION['admin_id'];
+                    $historiqueAdminModel->type_action = 'Validation'; // Nouveau type d'action
+                    $historiqueAdminModel->table_concernee = 'Benevoles';
+                    $historiqueAdminModel->id_enregistrement = $id;
+                    $historiqueAdminModel->details = "Validation du benevole ID $id";
+                    $historiqueAdminModel->create();
+                        $success = "Bénévolat approuvé avec succès!";
+                    } else {
+                        $error = "Erreur lors de l'approbation du bénévolat.";
+                    }
+                    break;
+    
+                case 'complete_benevolat':
+                    if ($benevolatModel->complete($id)) {
+                        $success = "Bénévolat marqué comme terminé avec succès!";
+                    } else {
+                        $error = "Erreur lors de la mise à jour du statut du bénévolat.";
+                    }
+                    break;
+            }
         }
     }
-}
+    
 
 // Récupérer les dons et bénévolats
 $dons = $donModel->read()->fetchAll(PDO::FETCH_ASSOC);
@@ -85,8 +135,8 @@ $benevolatStats = $benevolatModel->getStats();
                 </div>
                 <div class="card-body">
                     <p>Total des dons : <?php echo $donStats['total_dons']; ?></p>
-                    <p>Montant total : <?php echo $donStats['total_montant']; ?> €</p>
-                    <p>Moyenne des dons : <?php echo $donStats['moyenne_montant']; ?> €</p>
+                    <p>Montant total : <?php echo $donStats['total_montant']; ?>DA</p>
+                    <p>Moyenne des dons : <?php echo $donStats['moyenne_montant']; ?> DA</p>
                 </div>
             </div>
         </div>
@@ -124,7 +174,7 @@ $benevolatStats = $benevolatModel->getStats();
                         <?php foreach ($dons as $don): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($don['prenom'] . ' ' . $don['nom']); ?></td>
-                                <td><?php echo $don['montant']; ?> €</td>
+                                <td><?php echo $don['montant']; ?> DA</td>
                                 <td><?php echo $don['date_don']; ?></td>
                                 <td><?php echo $don['statut']; ?></td>
                                 <td>
@@ -136,9 +186,9 @@ $benevolatStats = $benevolatModel->getStats();
                                         </form>
                                     <?php endif; ?>
                                     <form method="POST" style="display:inline;">
-                                        <input type="hidden" name="id" value="<?php echo $don['id']; ?>">
-                                        <button type="submit" name="action" value="delete_don" class="btn btn-sm btn-danger">Supprimer</button>
-                                    </form>
+    <input type="hidden" name="id" value="<?php echo $don['id']; ?>">
+    <button type="submit" name="action" value="delete_don" class="btn btn-sm btn-danger">Supprimer</button>
+</form>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -148,7 +198,6 @@ $benevolatStats = $benevolatModel->getStats();
         </div>
     </div>
 
-    <!-- Liste des bénévolats -->
     <div class="card">
         <div class="card-header">
             <h5 class="mb-0">Liste des Bénévolats</h5>
@@ -165,12 +214,34 @@ $benevolatStats = $benevolatModel->getStats();
                         </tr>
                     </thead>
                     <tbody>
+                        <?php
+                        // Définir les statuts des bénévolats
+                        $statuts = [
+                            1 => 'Inscrit',
+                            2 => 'Confirmé',
+                            3 => 'Terminé'
+                        ];
+                        ?>
                         <?php foreach ($benevoles as $benevole): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($benevole['prenom'] . ' ' . $benevole['nom']); ?></td>
-                                <td><?php echo htmlspecialchars($benevole['evenement']); ?></td>
-                                <td><?php echo htmlspecialchars($benevole['statut']); ?></td>
+                                <td><?php echo htmlspecialchars($benevole['evenement_id']); ?></td>
+                                <td><?php echo htmlspecialchars($statuts[$benevole['id_statut_benevolat']]); ?></td>
                                 <td>
+                                    <?php if ($benevole['id_statut_benevolat'] == 1): ?>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="id" value="<?php echo $benevole['id']; ?>">
+                                            <button type="submit" name="action" value="approve_benevolat" class="btn btn-sm btn-success">Approuver</button>
+                                        </form>
+                                    <?php endif; ?>
+
+                                    <?php if ($benevole['id_statut_benevolat'] == 2): ?>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="id" value="<?php echo $benevole['id']; ?>">
+                                            <button type="submit" name="action" value="complete_benevolat" class="btn btn-sm btn-primary">Terminer</button>
+                                        </form>
+                                    <?php endif; ?>
+
                                     <form method="POST" style="display:inline;">
                                         <input type="hidden" name="id" value="<?php echo $benevole['id']; ?>">
                                         <button type="submit" name="action" value="delete_benevolat" class="btn btn-sm btn-danger">Supprimer</button>

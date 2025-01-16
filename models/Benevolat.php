@@ -62,16 +62,17 @@ class Benevolat {
     }
 
     // Supprimer un bénévolat
-    public function delete() {
-        $query = "DELETE FROM " . $this->table . " WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $this->id);
 
-        if ($stmt->execute()) {
-            return true;
+        public function delete($id) {
+            $query = "DELETE FROM " . $this->table . " WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        
+            if ($stmt->execute()) {
+                return true;
+            }
+            return false;
         }
-        return false;
-    }
 
     // Récupérer les statistiques des bénévolats
     public function getStats() {
@@ -82,6 +83,27 @@ class Benevolat {
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function approve($id) {
+        $query = "UPDATE " . $this->table . " SET id_statut_benevolat = 2 WHERE id = :id"; // 2 = Confirmé
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+    
+    public function complete($id) {
+        $query = "UPDATE " . $this->table . " SET id_statut_benevolat = 3 WHERE id = :id"; // 3 = Terminé
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
     }
 }
 ?>
