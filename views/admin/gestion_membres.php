@@ -65,6 +65,7 @@ $membres = $membreModel->getAllMembers($filtre_statut, $filtre_type_abonnement, 
                         <option value="En attente" <?php echo ($filtre_statut === 'En attente') ? 'selected' : ''; ?>>En attente</option>
                         <option value="Approuvé" <?php echo ($filtre_statut === 'Approuvé') ? 'selected' : ''; ?>>Approuvé</option>
                         <option value="Rejeté" <?php echo ($filtre_statut === 'Rejeté') ? 'selected' : ''; ?>>Rejeté</option>
+                        <option value="Bloqué" <?php echo ($filtre_statut === 'Bloqué') ? 'selected' : ''; ?>>Bloqué</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -94,48 +95,58 @@ $membres = $membreModel->getAllMembers($filtre_statut, $filtre_type_abonnement, 
     </div>
 
     <!-- Liste des membres -->
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">Liste des Membres</h5>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
+    <!-- Liste des membres -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Liste des Membres</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Type d'abonnement</th>
+                        <th>Date d'inscription</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($membres as $membre): ?>
                         <tr>
-                            <th>Nom</th>
-                            <th>Email</th>
-                            <th>Téléphone</th>
-                            <th>Type d'abonnement</th>
-                            <th>Date d'inscription</th>
-                            <th>Statut</th>
-                            <th>Actions</th>
+                            <td><?php echo htmlspecialchars($membre['prenom'] . ' ' . $membre['nom']); ?></td>
+                            <td><?php echo htmlspecialchars($membre['email']); ?></td>
+                            <td><?php echo htmlspecialchars($membre['telephone']); ?></td>
+                            <td><?php echo htmlspecialchars($membre['type_abonnement']); ?></td>
+                            <td><?php echo htmlspecialchars($membre['date_inscription']); ?></td>
+                            <td><?php echo htmlspecialchars($membre['statut']); ?></td>
+                            <<td>
+    <?php if ($membre['statut'] === 'En attente'): ?>
+        <a href="gestion_membres.php?action=approve&id=<?php echo $membre['id']; ?>" class="btn btn-sm btn-success">Approuver</a>
+        <a href="gestion_membres.php?action=reject&id=<?php echo $membre['id']; ?>" class="btn btn-sm btn-danger">Rejeter</a>
+    <?php endif; ?>
+    <button class="btn btn-sm btn-info btn-details" data-id="<?php echo $membre['id']; ?>">Détails</button>
+    <?php if ($membre['statut'] !== 'Bloqué'): ?>
+        <button class="btn btn-sm btn-warning btn-bloquer" data-id="<?php echo $membre['id']; ?>" data-statut="<?php echo $membre['statut']; ?>">
+            Bloquer
+        </button>
+    <?php else: ?>
+        <button class="btn btn-sm btn-warning btn-bloquer" data-id="<?php echo $membre['id']; ?>" data-statut="<?php echo $membre['statut']; ?>">
+            Débloquer
+        </button>
+    <?php endif; ?>
+</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($membres as $membre): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($membre['prenom'] . ' ' . $membre['nom']); ?></td>
-                                <td><?php echo htmlspecialchars($membre['email']); ?></td>
-                                <td><?php echo htmlspecialchars($membre['telephone']); ?></td>
-                                <td><?php echo htmlspecialchars($membre['type_abonnement']); ?></td>
-                                <td><?php echo htmlspecialchars($membre['date_inscription']); ?></td>
-                                <td><?php echo htmlspecialchars($membre['statut']); ?></td>
-                                <td>
-                                    <?php if ($membre['statut'] === 'En attente'): ?>
-                                        <a href="gestion_membres.php?action=approve&id=<?php echo $membre['id']; ?>" class="btn btn-sm btn-success">Approuver</a>
-                                        <a href="gestion_membres.php?action=reject&id=<?php echo $membre['id']; ?>" class="btn btn-sm btn-danger">Rejeter</a>
-                                    <?php endif; ?>
-                                    <button class="btn btn-sm btn-info btn-details" data-id="<?php echo $membre['id']; ?>">Détails</button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+
 <!-- Modal for Member Details -->
 <div class="modal fade" id="memberDetailsModal" tabindex="-1" aria-labelledby="memberDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -159,6 +170,37 @@ $membres = $membreModel->getAllMembers($filtre_statut, $filtre_type_abonnement, 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+   $(document).ready(function() {
+    // Gestion du clic sur le bouton "Bloquer/Débloquer"
+    $('.btn-bloquer').on('click', function() {
+        var memberId = $(this).data('id');
+        var statutActuel = $(this).data('statut');
+        var action = statutActuel === 'Bloqué' ? 'débloquer' : 'bloquer';
+
+        // Demander une confirmation
+        if (confirm(`Voulez-vous vraiment ${action} ce membre ?`)) {
+            var nouveauStatut = statutActuel === 'Bloqué' ? 'Approuvé' : 'Bloqué'; // Inverser le statut
+
+            // Envoyer une requête AJAX pour bloquer/débloquer le membre
+            $.ajax({
+                url: 'bloquer_membre.php',
+                type: 'POST',
+                data: { id: memberId, statut: nouveauStatut },
+                success: function(response) {
+                    if (response.success) {
+                        // Recharger la page pour mettre à jour l'interface
+                        location.reload();
+                    } else {
+                        alert('Erreur lors de la mise à jour du statut.');
+                    }
+                },
+                error: function() {
+                    alert('Erreur lors de la communication avec le serveur.');
+                }
+            });
+        }
+    });
+});
     $(document).ready(function() {
         // Handle "Détails" button click
         $('.btn-details').on('click', function() {
@@ -179,6 +221,7 @@ $membres = $membreModel->getAllMembers($filtre_statut, $filtre_type_abonnement, 
             });
         });
     });
+    
 </script>
 
 <?php require_once 'footer.php'; ?>

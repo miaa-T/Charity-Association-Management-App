@@ -231,5 +231,15 @@ class Membre {
     public function getErrors() {
         return $this->conn->errorInfo();
     }
+    public function setBloque($id, $bloque) {
+        // Si on débloque un membre, définir son statut sur "En attente"
+        $statut = $bloque ? 'Bloqué' : 'En attente';
+        $query = "UPDATE " . $this->table . " SET statut = :statut WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':statut', $statut);
+    
+        return $stmt->execute();
+    }
 }
 ?>

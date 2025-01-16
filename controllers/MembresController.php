@@ -147,5 +147,8 @@ $this->membreModel->statut = 'En attente'; // Default status
             return false;
         }
     }
+    public function setBloque($id, $bloque) {
+        return $this->membreModel->setBloque($id, $bloque);
+    }
 }
 ?>
