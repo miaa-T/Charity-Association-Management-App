@@ -10,7 +10,7 @@ class AideController {
     public function __construct() {
         $database = new Database();
         $db = $database->connect();
-        $this->aide = new Aide($db); // For types_aide
+        $this->aide = new Aide($db); 
         $this->demandeAide = new DemandeAide($db); // For demandes_aides
     }
 
@@ -71,6 +71,12 @@ class AideController {
     public function getDemandesAide() {
         $result = $this->demandeAide->lire();
         return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    // Supprimer une demande d'aide
+    public function supprimerDemandeAide($id) {
+        return $this->demandeAide->supprimer($id);
     }
 }
 

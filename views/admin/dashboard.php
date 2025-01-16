@@ -74,7 +74,7 @@ try {
             <div class="card-body">
                 <h5 class="card-title">Demandes d'aide</h5>
                 <p class="card-text display-4"><?php echo $stats['demandes']; ?></p>
-                <a href="demandes_aide.php" class="btn btn-primary">Voir les demandes</a>
+                <a href="gestion__demandes_aides.php" class="btn btn-primary">Voir les demandes</a>
             </div>
         </div>
     </div>
