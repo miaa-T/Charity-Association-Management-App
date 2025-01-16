@@ -132,4 +132,51 @@ public function getRemiseDetails($remiseId) {
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
+
+    // Créer une nouvelle remise
+    public function createRemise($nom, $description, $type_remise, $valeur_remise, $expire_le, $id_partenaire, $id_categorie) {
+        $query = "INSERT INTO " . $this->table . " 
+                  (nom, description, type_remise, valeur_remise, expire_le, id_partenaire, id_categorie) 
+                  VALUES (:nom, :description, :type_remise, :valeur_remise, :expire_le, :id_partenaire, :id_categorie)";
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(':nom', $nom);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':type_remise', $type_remise);
+        $stmt->bindParam(':valeur_remise', $valeur_remise);
+        $stmt->bindParam(':expire_le', $expire_le);
+        $stmt->bindParam(':id_partenaire', $id_partenaire);
+        $stmt->bindParam(':id_categorie', $id_categorie);
+
+        return $stmt->execute();
+    }
+
+    // Mettre à jour une remise existante
+    public function updateRemise($id, $nom, $description, $type_remise, $valeur_remise, $expire_le, $id_partenaire, $id_categorie) {
+        $query = "UPDATE " . $this->table . " 
+                  SET nom = :nom, description = :description, type_remise = :type_remise, valeur_remise = :valeur_remise, expire_le = :expire_le, id_partenaire = :id_partenaire, id_categorie = :id_categorie 
+                  WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':nom', $nom);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':type_remise', $type_remise);
+        $stmt->bindParam(':valeur_remise', $valeur_remise);
+        $stmt->bindParam(':expire_le', $expire_le);
+        $stmt->bindParam(':id_partenaire', $id_partenaire);
+        $stmt->bindParam(':id_categorie', $id_categorie);
+
+        return $stmt->execute();
+    }
+
+    // Supprimer une remise
+    public function deleteRemise($id) {
+        $query = "DELETE FROM " . $this->table . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
 }
+

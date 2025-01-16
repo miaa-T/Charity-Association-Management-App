@@ -100,12 +100,7 @@ class PartenaireController {
         return $groupedPartners;
     }
 
-    /**
-     * Get the name of a category by its ID.
-     * 
-     * @param int $categoryId
-     * @return string
-     */
+   
     private function getCategoryName($categoryId) {
         $db = new Database();
         $conn = $db->connect();

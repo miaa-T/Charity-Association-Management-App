@@ -10,17 +10,23 @@ body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
 }
+.main-content {
+    margin-top: 80px; /* Ajustez cette valeur en fonction de la hauteur de votre navbar */
+}
 
 /* Navbar */
 /* Navbar Adjustments */
 .navbar {
+    position: sticky; /* Rend la navbar sticky */
+    top: 0; /* Positionne la navbar en haut de la page */
+    z-index: 1000; /* Assure que la navbar reste au-dessus des autres éléments */
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
     background-color: #ebebeb;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère pour un effet de profondeur */
 }
-
 .navbar .social-icons,
 .navbar .profile-pic {
     display: flex;

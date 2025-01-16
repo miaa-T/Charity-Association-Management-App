@@ -78,8 +78,13 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
                             <p>Partenaire : <?= htmlspecialchars($offer['partenaire_nom']); ?></p>
                             <p class="offer-discount"><?= htmlspecialchars($offer['valeur_remise']); ?></p>
                             <p><?= htmlspecialchars($offer['description']); ?></p>
-                            <button class="offer-btn">Voir l'offre</button>
-                        </div>
+                            <button class="offer-btn" onclick="showOfferPopup(
+                        '<?= htmlspecialchars($offer['nom']); ?>',
+                        '<?= htmlspecialchars($offer['partenaire_nom']); ?>',
+                        '<?= htmlspecialchars($offer['valeur_remise']); ?>',
+                        '<?= htmlspecialchars($offer['description']); ?>',
+                        '<?= isset($offer['expire_le']) ? htmlspecialchars($offer['expire_le']) : 'N/A'; ?>'
+                    )">Voir l'offre</button>                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -95,11 +100,25 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
                         <p>Partenaire : <?= htmlspecialchars($offer['partenaire_nom']); ?></p>
                         <p class="discount-value"><?= htmlspecialchars($offer['valeur_remise']); ?></p>
                         <p><?= htmlspecialchars($offer['description']); ?></p>
-                        <button class="offer-btn">Plus d'infos</button>
-                    </div>
+                        <button class="offer-btn" onclick="showOfferPopup(
+                        '<?= htmlspecialchars($offer['nom']); ?>',
+                        '<?= htmlspecialchars($offer['partenaire_nom']); ?>',
+                        '<?= htmlspecialchars($offer['valeur_remise']); ?>',
+                        '<?= htmlspecialchars($offer['description']); ?>')">Voir l'offre</button>                    </div>
                 <?php endforeach; ?>
             </div>
         </section>
+        <!-- Popup pour afficher les détails de l'offre -->
+<div id="offerPopup" class="popup">
+    <div class="popup-content">
+        <span class="close-btn" onclick="closePopup()">&times;</span>
+        <h2 id="popupTitle"></h2>
+        <p><strong>Partenaire :</strong> <span id="popupPartner"></span></p>
+        <p><strong>Valeur de la remise :</strong> <span id="popupDiscount"></span></p>
+        <p><strong>Description :</strong> <span id="popupDescription"></span></p>
+        <p><strong>Date d'expiration :</strong> <span id="popupExpiry"></span></p>
+    </div>
+</div>
     </main>
 
  <!-- Footer -->
@@ -187,6 +206,33 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
         searchBtn.addEventListener("click", fetchResults);
         applyFiltersBtn.addEventListener("click", fetchResults);
     });
+   
+    // Fonction pour afficher le popup avec les détails de l'offre
+    function showOfferPopup(nom, partenaire, valeur, description, expire_le) {
+        // Remplir les informations dans le popup
+        document.getElementById('popupTitle').textContent = nom;
+        document.getElementById('popupPartner').textContent = partenaire;
+        document.getElementById('popupDiscount').textContent = valeur;
+        document.getElementById('popupDescription').textContent = description;
+        document.getElementById('popupExpiry').textContent = expire_le || 'N/A';
+
+        // Afficher le popup
+        document.getElementById('offerPopup').style.display = 'flex';
+    }
+
+    // Fonction pour masquer le popup
+    function closePopup() {
+        document.getElementById('offerPopup').style.display = 'none';
+    }
+
+    // Fermer le popup si l'utilisateur clique en dehors du contenu
+    window.onclick = function (event) {
+        const popup = document.getElementById('offerPopup');
+        if (event.target === popup) {
+            closePopup();
+        }
+    };
 </script>
+
 </body>
 </html>

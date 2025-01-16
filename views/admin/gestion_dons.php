@@ -1,6 +1,12 @@
 <?php
 session_start();
 require_once 'config.php';
+
+// Redirect to login if admin is not logged in
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: login_kjhsfblzqiuhrqbli.php'); // Redirect to the login page
+    exit();
+}
 require_once __DIR__ . '/../../models/Don.php';
 require_once __DIR__ . '/../../models/Benevolat.php';
 require_once __DIR__ . '/../../models/HistoriqueAdmin.php';

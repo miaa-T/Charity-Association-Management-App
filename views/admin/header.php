@@ -37,6 +37,9 @@
                         <a class="nav-link" href="gestion__demandes_aides.php">Demandes d'Aides</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="gestion_offres.php">Offres</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="parametres.php">Paramètres</a>
                     </li>
                 </ul>

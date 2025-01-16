@@ -50,4 +50,17 @@ class RemisesController {
     public function getUtilisationsByPartenaire($id_partenaire) {
         return $this->remise->getUtilisationsByPartenaire($id_partenaire);
     }
+    public function createRemise($nom, $description, $type_remise, $valeur_remise, $expire_le, $id_partenaire, $id_categorie) {
+        return $this->remise->createRemise($nom, $description, $type_remise, $valeur_remise, $expire_le, $id_partenaire, $id_categorie);
+    }
+
+    // Mettre à jour une remise
+    public function updateRemise($id, $nom, $description, $type_remise, $valeur_remise, $expire_le, $id_partenaire, $id_categorie) {
+        return $this->remise->updateRemise($id, $nom, $description, $type_remise, $valeur_remise, $expire_le, $id_partenaire, $id_categorie);
+    }
+
+    // Supprimer une remise
+    public function deleteRemise($id) {
+        return $this->remise->deleteRemise($id);
+    }
 }
