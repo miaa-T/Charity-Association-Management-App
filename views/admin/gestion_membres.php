@@ -126,7 +126,7 @@ $membres = $membreModel->getAllMembers($filtre_statut, $filtre_type_abonnement, 
                                         <a href="gestion_membres.php?action=approve&id=<?php echo $membre['id']; ?>" class="btn btn-sm btn-success">Approuver</a>
                                         <a href="gestion_membres.php?action=reject&id=<?php echo $membre['id']; ?>" class="btn btn-sm btn-danger">Rejeter</a>
                                     <?php endif; ?>
-                                    <a href="details_membre.php?id=<?php echo $membre['id']; ?>" class="btn btn-sm btn-info">Détails</a>
+                                    <button class="btn btn-sm btn-info btn-details" data-id="<?php echo $membre['id']; ?>">Détails</button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -136,5 +136,49 @@ $membres = $membreModel->getAllMembers($filtre_statut, $filtre_type_abonnement, 
         </div>
     </div>
 </div>
+<!-- Modal for Member Details -->
+<div class="modal fade" id="memberDetailsModal" tabindex="-1" aria-labelledby="memberDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="memberDetailsModalLabel">Détails du Membre</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="memberDetailsContent">
+                <!-- Member details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Handle "Détails" button click
+        $('.btn-details').on('click', function() {
+            var memberId = $(this).data('id'); // Get member ID from data attribute
+
+            // Send AJAX request to fetch member details
+            $.ajax({
+                url: 'get_member_details.php', // Endpoint to fetch details
+                type: 'GET',
+                data: { id: memberId },
+                success: function(response) {
+                    $('#memberDetailsContent').html(response); // Load response into modal body
+                    $('#memberDetailsModal').modal('show'); // Show the modal
+                },
+                error: function() {
+                    alert('Erreur lors du chargement des détails du membre.');
+                }
+            });
+        });
+    });
+</script>
 
 <?php require_once 'footer.php'; ?>

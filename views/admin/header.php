@@ -46,6 +46,68 @@
     </nav>
 
  
-    
+    <!-- Ajouter ce code dans la section <head> ou avant la fermeture de </body> -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Gérer le clic sur le bouton "Détails"
+    $('.btn-details').on('click', function(e) {
+        e.preventDefault(); // Empêcher le comportement par défaut du lien
+
+        var memberId = $(this).data('id'); // Récupérer l'ID du membre
+
+        // Faire une requête AJAX pour récupérer les détails du membre
+        $.ajax({
+            url: 'MembreController.php',
+            type: 'GET',
+            data: {
+                action: 'get_member_details_json',
+                id: memberId
+            },
+            success: function(response) {
+                if (response.error) {
+                    alert(response.error);
+                } else {
+                    // Afficher les détails dans un popup
+                    var details = `
+                        <p><strong>Prénom:</strong> ${response.prenom}</p>
+                        <p><strong>Nom:</strong> ${response.nom}</p>
+                        <p><strong>Email:</strong> ${response.email}</p>
+                        <p><strong>Téléphone:</strong> ${response.telephone}</p>
+                        <p><strong>Adresse:</strong> ${response.adresse}</p>
+                        <p><strong>Type d'abonnement:</strong> ${response.nom_type_abonnement}</p>
+                        <p><strong>Date d'inscription:</strong> ${response.date_inscription}</p>
+                        <p><strong>Date d'expiration:</strong> ${response.date_expiration}</p>
+                        <p><strong>Statut:</strong> ${response.statut}</p>
+                    `;
+                    $('#memberDetailsPopup .modal-body').html(details);
+                    $('#memberDetailsPopup').modal('show');
+                }
+            },
+           
+        });
+    });
+});
+</script>
+
+<!-- Ajouter ce code pour le popup -->
+<div class="modal fade" id="memberDetailsPopup" tabindex="-1" role="dialog" aria-labelledby="memberDetailsPopupLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="memberDetailsPopupLabel">Détails du Membre</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Les détails du membre seront insérés ici -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
