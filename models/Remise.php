@@ -122,4 +122,14 @@ public function getUtilisationsByPartenaire($id_partenaire) {
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+public function getRemiseDetails($remiseId) {
+    $query = "SELECT r.*, p.nom AS partenaire_nom 
+              FROM remises r 
+              JOIN partenaires p ON r.id_partenaire = p.id
+              WHERE r.id = :remiseId";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':remiseId', $remiseId);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 }

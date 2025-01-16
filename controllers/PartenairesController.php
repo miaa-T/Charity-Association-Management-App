@@ -116,6 +116,10 @@ class PartenaireController {
         $stmt->execute();
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
         return $result ? $result['nom'] : 'Unknown';
+    }
+    public function getRemiseDetails($remiseId) {
+        return $this->remise->getRemiseDetails($remiseId);
     }
 }
